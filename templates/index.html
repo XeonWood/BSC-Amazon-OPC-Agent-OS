@@ -694,7 +694,7 @@ async function loadLicenseStatus() {
   } catch(e) {}
 }
 // ── Version Check ──
-var CURRENT_VERSION = 'v2.0';
+var CURRENT_VERSION = 'v2.2';
 var GITHUB_REPO = 'luotwo/BSC-Amazon-OPC-Agent-OS';
 var _otaDownloadUrl = '';
 var _otaAssetSize = 0;
@@ -1420,6 +1420,7 @@ function copyPrompt(i) {
 // ── Image Generation ──
 async function sendToChatGPT(promptIndex) {
   if (!currentAsin) { alert('任务状态丢失，请重新提交'); return; }
+  if (!selectedPrototype) { showToast('请先选择一张产品主图作为生成原型（点击图片即可选中）', 'error'); return; }
   var textarea = document.getElementById('promptText_'+promptIndex);
   var editedPrompt = textarea?textarea.value.trim():'';
   if (!editedPrompt) { alert('提示词为空，请检查'); return; }

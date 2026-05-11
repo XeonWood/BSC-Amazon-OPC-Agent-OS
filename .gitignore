@@ -1,0 +1,7 @@
+input/
+output/
+prompts/
+logs/
+stderr*.txt
+license.key
+trial_start.key
