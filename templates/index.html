@@ -46,7 +46,7 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
 }
 
 /* ── Main Content ── */
-.oa-main{flex:1;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
+.oa-main{flex:1;min-width:0;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
 .oa-content{flex:1;overflow-y:auto;padding:16px}
 .oa-content::-webkit-scrollbar{width:6px}
 .oa-content::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
@@ -74,6 +74,10 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
 /* ── Main Panel ── */
 .main-tab-panel{display:none}
 .main-tab-panel.active{display:block}
+#mainTabMaterial.active{display:flex;gap:0;overflow:hidden}
+.material-content{flex:1;min-width:0;overflow-y:auto;padding:0 2px}
+.material-content::-webkit-scrollbar{width:6px}
+.material-content::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
 /* ── Upload Zone ── */
 .upload-zone{
@@ -167,10 +171,16 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
   overflow-x:hidden;
 }
 .ptext:focus{outline:none;border-color:var(--accent)}
+.translate-btn{
+  font-size:.62rem;padding:2px 8px;border:1px solid var(--border);
+  border-radius:4px;background:var(--bg3);color:var(--accent2);
+  cursor:pointer;white-space:nowrap;transition:.15s;
+}
+.translate-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(22,119,255,.1)}
 .pmeta{font-size:.65rem;color:var(--muted);margin-top:6px}
-.pactions{margin-top:8px}
+.pactions{margin-top:8px;display:flex;gap:8px;align-items:center}
 .btn-send-chatgpt{
-  width:100%;padding:7px 12px;border:none;border-radius:6px;
+  flex:1;padding:7px 12px;border:none;border-radius:6px;
   background:var(--accent);color:#fff;font-size:.75rem;font-weight:600;
   cursor:pointer;transition:.2s;
 }
@@ -265,11 +275,11 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
 .metric-label{font-size:.65rem;color:var(--muted);margin-top:3px}
 
 /* ── Settings Modal ── */
-#settingsModal,#activateModal,#initGuideModal,#wechatQrModal,#zsxqQrModal{
+#settingsModal,#activateModal,#initGuideModal,#wechatQrModal,#zsxqQrModal,#wbUploadModal{
   display:none;position:fixed;inset:0;z-index:998;
   background:rgba(0,0,0,.7);align-items:center;justify-content:center;
 }
-#settingsModal.open,#activateModal.open,#initGuideModal.open,#wechatQrModal.open,#zsxqQrModal.open{display:flex}
+#settingsModal.open,#activateModal.open,#initGuideModal.open,#wechatQrModal.open,#zsxqQrModal.open,#wbUploadModal.open{display:flex}
 .settings-box{
   background:var(--bg2);border:1px solid var(--border);border-radius:12px;
   padding:0;width:520px;max-width:96vw;max-height:88vh;overflow:hidden;
@@ -321,6 +331,215 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
 .toggle-switch input:checked+.toggle-slider{background:var(--green);border-color:var(--green)}
 .toggle-switch input:checked+.toggle-slider:before{background:#fff;transform:translateX(20px)}
 .toggle-label{font-size:.68rem;margin-left:6px;vertical-align:middle;font-weight:600}
+
+/* ── Template Sidebar Panel ── */
+.template-panel{
+  width:260px;flex-shrink:0;background:var(--bg2);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;transition:width .2s;
+}
+.template-panel.collapsed{width:28px;min-width:28px;overflow:visible}
+.template-panel.collapsed .tpl-panel-head,
+.template-panel.collapsed .tpl-search,
+.template-panel.collapsed .tpl-scroll,
+.template-panel.collapsed .tpl-footer{display:none}
+.tpl-toggle-btn{
+  font-size:.7rem;padding:0 3px;border:none;border-radius:3px;
+  background:transparent;color:var(--muted);cursor:pointer;line-height:1;
+}
+.tpl-toggle-btn:hover{color:var(--text);background:var(--bg3)}
+.tpl-expand-tab{
+  display:none;
+  width:28px;height:100%;cursor:pointer;
+  align-items:center;justify-content:center;color:var(--muted);font-size:.65rem;
+  writing-mode:vertical-rl;letter-spacing:2px;
+}
+.template-panel.collapsed .tpl-expand-tab{display:flex}
+.template-panel.collapsed .tpl-expand-tab:hover{color:var(--accent)}
+.tpl-panel-head{
+  padding:10px 12px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.tpl-panel-title{font-size:.78rem;font-weight:700;color:var(--text)}
+.tpl-panel-actions{display:flex;gap:4px}
+.tpl-panel-actions button{
+  font-size:.58rem;padding:3px 6px;border:1px solid var(--border);border-radius:4px;
+  background:var(--bg3);color:var(--muted);cursor:pointer;white-space:nowrap;
+}
+.tpl-panel-actions button:hover{border-color:var(--accent);color:var(--accent)}
+.tpl-search{
+  padding:8px 12px;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.tpl-search input{
+  width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;
+  background:var(--bg3);color:var(--text);font-size:.68rem;outline:none;
+}
+.tpl-search input:focus{border-color:var(--accent)}
+.tpl-scroll{flex:1;overflow-y:auto;overflow-x:hidden}
+.tpl-scroll::-webkit-scrollbar{width:4px}
+.tpl-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.tpl-group{margin:0}
+.tpl-group-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;cursor:pointer;user-select:none;
+  border-bottom:1px solid var(--border);background:var(--bg3);
+  font-size:.68rem;font-weight:700;color:var(--muted);gap:4px;
+}
+.tpl-group-head:hover{background:rgba(22,119,255,.05)}
+.tpl-group-head .g-arrow{font-size:.55rem;transition:transform .2s;flex-shrink:0}
+.tpl-group-head .g-label{flex:1}
+.tpl-group-head .g-count{font-size:.58rem;font-weight:400;color:var(--muted);margin-left:4px}
+.tpl-group-head .g-add{
+  font-size:.58rem;padding:2px 8px;border:1px solid var(--green);border-radius:4px;
+  background:rgba(34,197,94,.08);color:var(--green);cursor:pointer;white-space:nowrap;font-weight:600;
+}
+.tpl-group-head .g-add:hover{background:var(--green);color:#fff}
+.tpl-group-body{overflow:hidden;transition:max-height .25s ease}
+.tpl-group-body.collapsed{max-height:0!important}
+.tpl-item{
+  display:flex;align-items:flex-start;gap:6px;padding:7px 12px 7px 10px;
+  border-bottom:1px solid rgba(45,51,72,.5);cursor:pointer;transition:.12s;
+  font-size:.65rem;position:relative;
+}
+.tpl-item:hover{background:rgba(22,119,255,.06)}
+.tpl-item.selected{background:rgba(22,119,255,.1);border-left:3px solid var(--accent)}
+.tpl-item .ti-pin{font-size:.55rem;flex-shrink:0;margin-top:1px;opacity:.4;cursor:pointer}
+.tpl-item .ti-pin.active{opacity:1;color:var(--accent2)}
+.tpl-item .ti-body{flex:1;min-width:0}
+.tpl-item .ti-name{font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tpl-item .ti-name.editing input{
+  width:100%;padding:2px 4px;border:1px solid var(--accent);border-radius:3px;
+  background:var(--bg3);color:var(--text);font-size:.65rem;outline:none;
+}
+.tpl-item .ti-meta{font-size:.56rem;color:var(--muted);margin-top:1px}
+.tpl-item .ti-star{font-size:.65rem;flex-shrink:0;cursor:pointer;opacity:.35;margin-top:1px}
+.tpl-item .ti-star.active{opacity:1;color:var(--accent2)}
+.tpl-item .ti-actions{display:flex;gap:2px;flex-shrink:0;opacity:0;transition:.12s}
+.tpl-item:hover .ti-actions{opacity:1}
+.tpl-item .ti-actions button{
+  font-size:.58rem;padding:2px 7px;border:1px solid var(--border);border-radius:3px;
+  background:var(--bg3);color:var(--muted);cursor:pointer;font-weight:600;
+}
+.tpl-item .ti-actions .btn-edit{border-color:var(--accent);color:var(--accent);background:rgba(22,119,255,.08)}
+.tpl-item .ti-actions .btn-edit:hover{background:var(--accent);color:#fff}
+.tpl-item .ti-actions .btn-clone{border-color:var(--muted);color:var(--muted)}
+.tpl-item .ti-actions .btn-clone:hover{border-color:var(--accent2);color:var(--accent2)}
+.tpl-item .ti-actions .btn-del{border-color:var(--red);color:var(--red);background:rgba(239,68,68,.08)}
+.tpl-item .ti-actions .btn-del:hover{background:var(--red);color:#fff}
+.tpl-empty{
+  text-align:center;padding:14px 12px;color:var(--muted);font-size:.62rem;
+}
+.tpl-empty .icon{font-size:1.2rem;margin-bottom:3px;opacity:.5}
+.tpl-footer{padding:8px 12px;border-top:1px solid var(--border);flex-shrink:0}
+.tpl-footer button{
+  width:100%;padding:7px;border:1px solid var(--accent);border-radius:6px;
+  background:rgba(22,119,255,.1);color:var(--accent);font-size:.68rem;cursor:pointer;font-weight:600;
+}
+.tpl-footer button:hover{background:var(--accent);color:#fff}
+
+/* ── Template Hover Preview ── */
+.tpl-preview-tip{
+  display:none;position:fixed;z-index:1000;pointer-events:none;
+  max-width:360px;max-height:200px;overflow:hidden;
+  background:var(--bg2);border:1px solid var(--accent);border-radius:8px;
+  padding:10px 12px;box-shadow:0 6px 24px rgba(0,0,0,.6);
+  font-size:.62rem;line-height:1.45;color:var(--text);
+  white-space:pre-wrap;word-break:break-word;
+}
+.tpl-preview-tip .fade{color:var(--muted)}
+
+/* ── Template Selector on Cards ── */
+.tpl-sel-row{
+  display:flex;align-items:center;gap:6px;margin-top:0;padding:2px 0;
+}
+.tpl-sel-row select{
+  flex:1;padding:5px 6px;border:1px solid var(--border);border-radius:5px;
+  background:var(--bg3);color:var(--text);font-size:.65rem;outline:none;
+  max-width:200px;
+}
+.tpl-sel-row select:focus{border-color:var(--accent)}
+.tpl-sel-row .sel-hint{font-size:.58rem;color:var(--muted)}
+.tpl-hint-en{font-size:.6rem;color:#f59e0b;font-weight:600;white-space:nowrap}
+.tpl-btn-cnen{
+  font-size:.58rem;padding:2px 6px;border:1px solid var(--accent2);
+  border-radius:4px;background:var(--bg3);color:var(--accent2);
+  cursor:pointer;white-space:nowrap;transition:.15s;
+}
+.tpl-btn-cnen:hover{border-color:var(--accent);color:var(--accent);background:rgba(22,119,255,.1)}
+
+/* ── Prompt Checkbox ── */
+.prompt-check{flex-shrink:0;margin-top:2px;cursor:pointer;accent-color:var(--accent)}
+
+/* ── New Template Modal ── */
+.tpl-modal-overlay{
+  display:none;position:fixed;inset:0;z-index:997;
+  background:rgba(0,0,0,.7);align-items:center;justify-content:center;
+}
+.tpl-modal-overlay.open{display:flex}
+.tpl-modal-box{
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  width:520px;max-width:96vw;max-height:90vh;display:flex;flex-direction:column;
+  box-shadow:0 8px 40px rgba(0,0,0,.6);
+}
+.tpl-modal-head{
+  padding:14px 16px 10px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.tpl-modal-head span{font-size:.82rem;font-weight:700}
+.tpl-modal-head button{
+  background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;
+}
+.tpl-modal-head button:hover{color:var(--text)}
+.tpl-modal-body{flex:1;overflow-y:auto;padding:14px 16px}
+.tpl-modal-body label{font-size:.68rem;color:var(--muted);display:block;margin-bottom:4px;margin-top:10px}
+.tpl-modal-body label:first-child{margin-top:0}
+.tpl-modal-body select,.tpl-modal-body input[type=text]{
+  width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;
+  background:var(--bg3);color:var(--text);font-size:.74rem;outline:none;
+}
+.tpl-modal-body select:focus,.tpl-modal-body input:focus{border-color:var(--accent)}
+.tpl-modal-body textarea{
+  width:100%;min-height:200px;padding:8px 10px;border:1px solid var(--border);
+  border-radius:6px;background:var(--bg3);color:var(--text);font-size:.7rem;
+  line-height:1.5;resize:vertical;outline:none;font-family:inherit;
+}
+.tpl-modal-body textarea:focus{border-color:var(--accent)}
+.tpl-modal-foot{
+  padding:10px 16px;border-top:1px solid var(--border);display:flex;gap:8px;
+  justify-content:flex-end;flex-shrink:0;
+}
+.tpl-modal-foot button{
+  padding:6px 18px;border:1px solid var(--border);border-radius:6px;
+  background:var(--bg3);color:var(--text);font-size:.72rem;cursor:pointer;
+}
+.tpl-modal-foot button.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.tpl-modal-foot button.btn-primary:hover{opacity:.85}
+
+/* ── Prompt Card Save Btn ── */
+.btn-save-tpl{
+  padding:5px 10px;border:1px solid var(--accent2);border-radius:6px;
+  background:rgba(245,158,11,.08);color:var(--accent2);font-size:.68rem;
+  cursor:pointer;transition:.15s;margin-left:0;flex-shrink:0;white-space:nowrap;
+}
+.btn-save-tpl:hover{background:rgba(245,158,11,.18)}
+
+/* ── Batch Toolbar ── */
+.batch-bar{
+  display:flex;align-items:center;gap:8px;padding:4px 0 8px;flex-wrap:wrap;
+}
+.batch-bar button{
+  padding:5px 12px;border:1px solid var(--border);border-radius:5px;
+  background:var(--bg2);color:var(--muted);font-size:.65rem;cursor:pointer;font-weight:600;
+}
+.batch-bar button:hover{opacity:.85}
+.batch-bar .btn-batch-save{
+  border-color:var(--green);background:rgba(34,197,94,.12);color:var(--green);
+}
+.batch-bar .btn-batch-save:hover{background:var(--green);color:#fff}
+.batch-bar .btn-batch-new{
+  border-color:var(--accent);background:rgba(22,119,255,.12);color:var(--accent);
+}
+.batch-bar .btn-batch-new:hover{background:var(--accent);color:#fff}
+.batch-bar label{font-size:.65rem;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:3px}
 </style>
 </head>
 <body>
@@ -357,7 +576,12 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
           <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.webp">
         </div>
         <div class="preview-thumbs" id="previewThumbs"></div>
-        <div class="asin-divider">&#x2015; 或输入 ASIN 从亚马逊采集 &#x2015;</div>
+        <div style="margin-bottom:6px;">
+          <label style="font-size:.68rem;color:var(--muted);">1688 商品链接（可选）</label>
+          <input type="text" id="c1688Url" placeholder="https://detail.1688.com/offer/xxxxx.html" oninput="updateAsinDivider()" style="width:100%;">
+          <div id="c1688Status" style="font-size:.6rem;color:var(--muted);margin-top:2px;display:none;"></div>
+        </div>
+        <div class="asin-divider" id="asinDivider">&#x2015; 或输入 ASIN 从亚马逊采集 &#x2015;</div><!-- text updated by updateAsinDivider() -->
         <div class="form-row">
           <input type="text" id="asinInput" placeholder="B0XXXXXX" maxlength="15">
           <select id="marketplaceSelect">
@@ -422,11 +646,12 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
 
       <!-- Tab Panel: 产品素材生成 -->
       <div id="mainTabMaterial" class="main-tab-panel active">
+        <div class="material-content">
         <div style="padding:0 2px">
 
           <div class="image-workspace" style="margin-top:0">
             <div class="workspace-title">&#x1F4F7; 产品参考图片 <span class="badge" id="refImageCount">0</span></div>
-            <div class="prototype-hint" id="prototypeHint">&#x1F4CC; 点击图片设为<strong>产品原型</strong> — GPT Image-2 将以此图为参考生成新图<br><span style="font-size:.65rem;color:var(--accent2);font-weight:600;">💡 图片不易抠白底？请直接上传产品白底图片进行图生图</span></div>
+            <div class="prototype-hint" id="prototypeHint" style="display:none">&#x1F4CC; 点击图片设为<strong>产品原型</strong> — GPT Image-2 将以此图为参考生成新图<br><span style="font-size:.65rem;color:var(--accent2);font-weight:600;">💡 图片不易抠白底？请直接上传产品白底图片进行图生图</span></div>
             <div class="ref-image-grid" id="refImageGrid">
               <div class="empty"><div class="icon">&#x1F4F7;</div>请上传产品图片，或输入 ASIN 后点击「开始采集」<br>点击图片即可设为 GPT Image-2 生成原型</div>
             </div>
@@ -446,6 +671,27 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
             </div>
           </div>
 
+        </div>
+        </div>
+        <!-- Template Panel (inside tab) -->
+        <div class="template-panel" id="templatePanel">
+          <div class="tpl-expand-tab" onclick="tplTogglePanel()" title="展开模板库">模板库</div>
+          <div class="tpl-panel-head">
+            <button class="tpl-toggle-btn" onclick="tplTogglePanel()" title="伸缩模板库">◀</button>
+            <span class="tpl-panel-title">📂 模板库</span>
+            <div class="tpl-panel-actions">
+              <button onclick="tplExport()" title="导出全部模板">⇱ 导出</button>
+              <button onclick="document.getElementById('tplImportFile').click()" title="从文件导入模板">⇲ 导入</button>
+              <input type="file" id="tplImportFile" accept=".json" style="display:none" onchange="tplImport(this)">
+            </div>
+          </div>
+          <div class="tpl-search">
+            <input type="text" id="tplSearchInput" placeholder="🔍 搜索模板..." oninput="tplFilter(this.value)">
+          </div>
+          <div class="tpl-scroll" id="tplScroll"></div>
+          <div class="tpl-footer">
+            <button onclick="tplOpenNewModal()">+ 新建模板</button>
+          </div>
         </div>
       </div>
 
@@ -468,7 +714,6 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
 
     </div>
   </div>
-</div>
 
 <!-- Image Preview Modal -->
 <div id="previewModal"><button class="close-btn" onclick="closePreview()">&times;</button><img id="previewImg" src="" alt=""></div>
@@ -529,6 +774,35 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
   </div>
 </div>
 
+	<!-- Template Hover Preview -->
+	<div class="tpl-preview-tip" id="tplPreviewTip"></div>
+
+	<!-- New Template Modal -->
+	<div class="tpl-modal-overlay" id="tplNewModal">
+	  <div class="tpl-modal-box">
+	    <div class="tpl-modal-head">
+	      <span id="tplModalTitle">新建提示词模板</span>
+	      <button onclick="tplCloseNewModal()">✕</button>
+	    </div>
+	    <div class="tpl-modal-body">
+	      <label>图片类型</label>
+	      <select id="tplNewType"></select>
+	      <label>模板名称</label>
+	      <input type="text" id="tplNewName" placeholder="便于自己识别的名称">
+	      <label>备注说明（选填）</label>
+	      <input type="text" id="tplNewDesc" placeholder="方便自己识别，如：适合白色小家电">
+	      <label>提示词内容</label>
+	      <textarea id="tplNewPrompt" placeholder="在此编写或粘贴提示词内容..."></textarea>
+	    </div>
+	    <div class="tpl-modal-foot">
+		      <button onclick="tplCloseNewModal()">取消</button>
+		      <button class="btn-primary" onclick="tplSaveNew()">保存模板</button>
+		    </div>
+		  </div>
+		</div>
+
+</div>
+
 <!-- System Init Guide Modal -->
 <div id="initGuideModal">
   <div class="settings-box" style="width:640px;">
@@ -541,8 +815,8 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
         首次使用请按以下步骤配置 API 和 MCP 服务，完成后即可正常使用全部功能。
       </div>
 
-      <div class="settings-section-title">Step 1: 配置 GPT-Image-2（图片生成）<span style="font-size:.6rem;color:var(--red);margin-left:6px;font-size:.7rem;">必选</span></div>
-      <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px;">OpenAI 兼容的 GPT-Image-2 图生图服务（支持 APIMart、等车等），用于将提示词转换为产品图片。</div>
+      <div class="settings-section-title">Step 1: 配置图生图服务（GPT-Image-2 或 Gemini-3 Nano Banana）</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px;">OpenAI 兼容的图生图服务（GPT-Image-2 / Gemini-3 Nano Banana，支持 APIMart 等），用于将提示词转换为产品图片。</div>
       <a href="https://apimart.ai/register?aff=iJpswH" target="_blank" style="display:inline-block;padding:6px 16px;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none;font-size:.74rem;font-weight:600;margin-bottom:4px;">推荐：注册 APIMart API</a>
       <div style="font-size:.65rem;color:var(--muted);margin-bottom:16px;">也可使用任意 OpenAI 兼容的图生图服务，填入 Base URL + API Key 即可。</div>
 
@@ -621,13 +895,25 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
       <button class="btn-icon" onclick="closeSettings()" style="font-size:.8rem;">&#x2715;</button>
     </div>
     <div class="settings-body">
-      <div class="settings-section-title">GPT-Image-2 配置 <span style="font-size:.6rem;color:var(--red);">必选</span></div>
+      <div style="margin-bottom:14px;padding:10px 14px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;font-size:.68rem;color:var(--accent2);line-height:1.6;">
+        💡 <b>提示：</b>Model、分辨率等输入框支持<b>下拉选择</b>（聚焦或点击右侧箭头），列表中无匹配项时可<b>手动输入</b>自定义值。配置完成后需点击<b>「🔗 测试连接」</b>显示成功，再<b>「💾 保存」</b>设置。
+      </div>
+      <div class="settings-section-title">GPT-Image-2 配置</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><label class="toggle-switch"><input type="checkbox" id="tglApimart" onchange="onImgGenToggle('apimart')"><span class="toggle-slider"></span></label><span class="toggle-label" id="lblApimart">开启</span></div>
       <div class="settings-field"><label>API Key</label><div style="position:relative;"><input type="password" id="cfgApimartKey" placeholder="sk-..." style="padding-right:36px;"><span onclick="togglePwd('cfgApimartKey')" style="position:absolute;right:8px;top:7px;cursor:pointer;font-size:.8rem;opacity:.5;">👁</span></div></div>
       <div class="settings-field"><label>Base URL</label><input type="text" id="cfgApimartUrl" placeholder="https://api.apimart.ai"></div>
       <div class="settings-field"><label>Model</label><input type="text" id="cfgApimartModel" placeholder="gpt-image-2" list="modelList" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--text);font-size:.8rem;outline:none;"><datalist id="modelList"><option value="gpt-image-2"><option value="gpt-image-2-official"><option value="gpt-image-1"></datalist></div>
       <div class="settings-field"><label>输出分辨率</label><input type="text" id="cfgApimartResolution" placeholder="1k" list="resolutionList" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--text);font-size:.8rem;outline:none;"><datalist id="resolutionList"><option value="1k"><option value="2k"><option value="4k"></datalist></div>
       <div class="settings-field"><label>输出质量</label><input type="text" id="cfgApimartQuality" placeholder="high" list="qualityList" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--text);font-size:.8rem;outline:none;"><datalist id="qualityList"><option value="standard"><option value="high"></datalist></div>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><button onclick="testApi('apimart')" id="btnTestApimart" style="padding:4px 12px;border:1px solid var(--border);border-radius:4px;background:var(--bg3);color:var(--text);font-size:.65rem;cursor:pointer;">🔗 测试连接</button><span id="statusApimart" style="font-size:.62rem;"></span></div>
+
+      <div class="settings-section-title" style="margin-top:16px;">Gemini-3 Nano Banana 配置</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><label class="toggle-switch"><input type="checkbox" id="tglGemini" onchange="onImgGenToggle('gemini')"><span class="toggle-slider"></span></label><span class="toggle-label" id="lblGemini">关闭</span></div>
+      <div class="settings-field"><label>API Key</label><div style="position:relative;"><input type="password" id="cfgGeminiKey" placeholder="sk-..." style="padding-right:36px;"><span onclick="togglePwd('cfgGeminiKey')" style="position:absolute;right:8px;top:7px;cursor:pointer;font-size:.8rem;opacity:.5;">👁</span></div></div>
+      <div class="settings-field"><label>Base URL</label><input type="text" id="cfgGeminiUrl" placeholder="https://api.apimart.ai"></div>
+      <div class="settings-field"><label>Model</label><input type="text" id="cfgGeminiModel" placeholder="gemini-3-pro-image-preview" list="geminiModelList" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--text);font-size:.8rem;outline:none;"><datalist id="geminiModelList"><option value="gemini-3-pro-image-preview"><option value="gemini-3-pro-image-preview-official"></datalist></div>
+      <div class="settings-field"><label>输出分辨率</label><input type="text" id="cfgGeminiResolution" placeholder="1K" list="geminiResolutionList" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--text);font-size:.8rem;outline:none;"><datalist id="geminiResolutionList"><option value="1K"><option value="2K"><option value="4K"></datalist></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><button onclick="testApi('gemini')" id="btnTestGemini" style="padding:4px 12px;border:1px solid var(--border);border-radius:4px;background:var(--bg3);color:var(--text);font-size:.65rem;cursor:pointer;">🔗 测试连接</button><span id="statusGemini" style="font-size:.62rem;"></span></div>
 
       <div class="settings-section-title" style="margin-top:16px;">SIF MCP 配置 <span style="font-size:.6rem;color:var(--red);">必选</span></div>
       <div class="settings-field"><label>Endpoint</label><input type="text" id="cfgSifEndpoint" placeholder="https://mcp.sif.com/mcp"></div>
@@ -694,7 +980,7 @@ async function loadLicenseStatus() {
   } catch(e) {}
 }
 // ── Version Check ──
-var CURRENT_VERSION = 'v2.2';
+var CURRENT_VERSION = 'v2.3';
 var GITHUB_REPO = 'luotwo/BSC-Amazon-OPC-Agent-OS';
 var _otaDownloadUrl = '';
 var _otaAssetSize = 0;
@@ -796,12 +1082,20 @@ async function checkFirstRunSetup() {
   try {
     var res = await fetch('/api/settings');
     var cfg = await res.json();
+    // Initialize image gen toggle states from config (fix: model name in toast)
+    var gm = cfg.gemini || {};
+    var am = cfg.apimart || {};
+    document.getElementById('tglGemini').checked = !!gm.enabled;
+    document.getElementById('lblGemini').textContent = gm.enabled ? '开启' : '关闭';
+    document.getElementById('tglApimart').checked = am.enabled !== false;
+    document.getElementById('lblApimart').textContent = (am.enabled !== false) ? '开启' : '关闭';
     var missing = [];
     // Redacted values (containing ***) mean it IS configured — just hidden for security
     var hasApimart = cfg.apimart && cfg.apimart.api_key && cfg.apimart.api_key.length > 0;
+    var hasGemini = cfg.gemini && cfg.gemini.api_key && cfg.gemini.api_key.length > 0;
     var hasSif = cfg.sif_mcp && cfg.sif_mcp.endpoint && cfg.sif_mcp.endpoint.length > 0;
     var hasSorftime = cfg.sorftime_mcp && cfg.sorftime_mcp.endpoint && cfg.sorftime_mcp.endpoint.length > 0;
-    if (!hasApimart) missing.push('GPT-Image-2 API Key');
+    if (!hasApimart && !hasGemini) missing.push('图生图 API Key (GPT-Image-2 或 Gemini)');
     if (!hasSif) missing.push('SIF MCP Endpoint');
     if (!hasSorftime) missing.push('Sorftime MCP Endpoint');
     if (missing.length > 0) {
@@ -893,6 +1187,8 @@ async function testApi(service) {
   var body = {};
   if (service === 'apimart') {
     body.apimart = {api_key: document.getElementById('cfgApimartKey').value, base_url: document.getElementById('cfgApimartUrl').value};
+  } else if (service === 'gemini') {
+    body.gemini = {api_key: document.getElementById('cfgGeminiKey').value, base_url: document.getElementById('cfgGeminiUrl').value};
   } else if (service === 'sif') {
     body.sif_mcp = {endpoint: document.getElementById('cfgSifEndpoint').value, api_key: document.getElementById('cfgSifKey').value, enabled: true};
   } else if (service === 'sorftime') {
@@ -926,6 +1222,30 @@ function onMcpToggle(which) {
   } else {
     if (tglSt.checked) { tglSs.checked = false; lblSs.textContent = '关闭'; lblSt.textContent = '开启'; }
     else { lblSt.textContent = '关闭'; }
+  }
+}
+
+function onImgGenToggle(which) {
+  var tglApt = document.getElementById('tglApimart');
+  var tglGem = document.getElementById('tglGemini');
+  var lblApt = document.getElementById('lblApimart');
+  var lblGem = document.getElementById('lblGemini');
+  if (which === 'apimart') {
+    if (tglApt.checked) {
+      tglGem.checked = false; lblGem.textContent = '关闭'; lblApt.textContent = '开启';
+    } else {
+      // 不允许两个同时关闭，自动开启另一个
+      if (!tglGem.checked) { tglGem.checked = true; lblGem.textContent = '开启'; }
+      lblApt.textContent = '关闭';
+    }
+  } else {
+    if (tglGem.checked) {
+      tglApt.checked = false; lblApt.textContent = '关闭'; lblGem.textContent = '开启';
+    } else {
+      // 不允许两个同时关闭，自动开启另一个
+      if (!tglApt.checked) { tglApt.checked = true; lblApt.textContent = '开启'; }
+      lblGem.textContent = '关闭';
+    }
   }
 }
 
@@ -964,6 +1284,15 @@ function openSettings() {
     document.getElementById('cfgApimartResolution').value = am.resolution||'1k';
     document.getElementById('cfgApimartQuality').value = am.quality||'high';
     document.getElementById('cfgApimartModel').value = am.model||'gpt-image-2';
+    document.getElementById('tglApimart').checked = am.enabled !== false;
+    document.getElementById('lblApimart').textContent = am.enabled !== false ? '开启' : '关闭';
+    var gm = cfg.gemini||{};
+    document.getElementById('cfgGeminiKey').value = gm.api_key||'';
+    document.getElementById('cfgGeminiUrl').value = gm.base_url||'https://api.apimart.ai';
+    document.getElementById('cfgGeminiModel').value = gm.model||'gemini-3-pro-image-preview';
+    document.getElementById('cfgGeminiResolution').value = gm.resolution||'1K';
+    document.getElementById('tglGemini').checked = !!gm.enabled;
+    document.getElementById('lblGemini').textContent = gm.enabled ? '开启' : '关闭';
     var sf = cfg.sif_mcp||{};
     document.getElementById('cfgSifEndpoint').value = sf.endpoint||'';
     document.getElementById('cfgSifKey').value = sf.api_key||'';
@@ -982,6 +1311,7 @@ function openSettings() {
     document.getElementById('statusSif').textContent = '';
     document.getElementById('statusSorftime').textContent = '';
     document.getElementById('statusSellersprite').textContent = '';
+    document.getElementById('statusGemini').textContent = '';
   }).catch(function(){});
 }
 function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
@@ -1000,7 +1330,8 @@ function saveSettings() {
   }
   // Build data object, omitting redacted/unmodified keys
   var data = {
-    apimart: {base_url:document.getElementById('cfgApimartUrl').value, model:document.getElementById('cfgApimartModel').value, resolution:document.getElementById('cfgApimartResolution').value, quality:document.getElementById('cfgApimartQuality').value},
+    apimart: {base_url:document.getElementById('cfgApimartUrl').value, model:document.getElementById('cfgApimartModel').value, resolution:document.getElementById('cfgApimartResolution').value, quality:document.getElementById('cfgApimartQuality').value, enabled:!!document.getElementById('tglApimart').checked},
+    gemini: {base_url:document.getElementById('cfgGeminiUrl').value, model:document.getElementById('cfgGeminiModel').value, resolution:document.getElementById('cfgGeminiResolution').value, enabled:!!document.getElementById('tglGemini').checked},
     sif_mcp: {endpoint: sifEndpoint, enabled: !!sifEndpoint},
     sorftime_mcp: {endpoint:document.getElementById('cfgSorftimeEndpoint').value, enabled:!!document.getElementById('tglSorftime').checked},
     sellersprite_mcp: {endpoint:document.getElementById('cfgSellerspriteEndpoint').value, enabled:!!document.getElementById('tglSellersprite').checked}
@@ -1008,13 +1339,22 @@ function saveSettings() {
   // Only include keys that user actually changed (not redacted)
   var ak = _saveKey(document.getElementById('cfgApimartKey').value);
   if (ak !== null) data.apimart.api_key = ak;
+  var gk = _saveKey(document.getElementById('cfgGeminiKey').value);
+  if (gk !== null) data.gemini.api_key = gk;
   if (sifKey !== null) data.sif_mcp.api_key = sifKey;
   var stk = _saveKey(document.getElementById('cfgSorftimeKey').value);
   if (stk !== null) data.sorftime_mcp.api_key = stk;
   var ssk = _saveKey(document.getElementById('cfgSellerspriteKey').value);
   if (ssk !== null) data.sellersprite_mcp.api_key = ssk;
   fetch('/api/settings', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)})
-    .then(function(r){return r.json();}).then(function(d){if(d.status==='saved'){closeSettings();showToast('设置已保存','success');}})
+    .then(function(r){
+      if (!r.ok) throw new Error('服务器错误 (' + r.status + ')');
+      return r.text().then(function(t){
+        try { return JSON.parse(t); }
+        catch(e) { throw new Error('服务器返回异常，请刷新页面后重试'); }
+      });
+    })
+    .then(function(d){if(d.status==='saved'){closeSettings();showToast('设置已保存','success');}})
     .catch(function(e){alert('保存失败: '+e.message);});
 }
 document.getElementById('settingsModal').addEventListener('click', function(e){if(e.target===this)closeSettings();});
@@ -1097,7 +1437,7 @@ document.getElementById('wbUploadModal').addEventListener('click', function(e){i
 
 // ── Clear Cache ──
 async function clearAllCache() {
-  if (!confirm('确认清除所有历史缓存、生成记录和图片记录？此操作不可恢复。')) return;
+  if (!confirm('确认清除所有历史缓存、生成记录和图片记录？\n\n⚠️ 提示词模板库（prompt_templates/）不会被清除。\n💡 建议先用模板库的「导出」功能备份模板 JSON 文件。\n\n此操作不可恢复，确定继续？')) return;
   var btn = event.target;
   btn.disabled = true; btn.textContent = '⏳ 正在清除...';
   try {
@@ -1120,6 +1460,7 @@ async function clearAllCache() {
       document.getElementById('asinCategoryInfo').style.display = 'none';
       document.getElementById('mcpWarningBanner').style.display = 'none';
       resetProgress();
+      cleanAfterCollect();
     }
   } catch(e) { showToast('清除失败: '+e.message, 'error'); }
   finally { btn.disabled = false; btn.textContent = '🗑 清除缓存记录'; }
@@ -1157,6 +1498,7 @@ function handleFiles(files) {
     }
   }
   renderUploadThumbs();
+  updateAsinDivider();
 }
 
 function renderUploadThumbs() {
@@ -1195,10 +1537,39 @@ function stopProgressTimer() {
   if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
 }
 
+function updateAsinDivider() {
+  var c1688Url = document.getElementById('c1688Url').value.trim();
+  var hasUploaded = uploadedFiles.length > 0;
+  var divider = document.getElementById('asinDivider');
+  if (c1688Url || hasUploaded) {
+    divider.textContent = '― 需要输入亚马逊 ASIN 采集参考数据 ―';
+  } else {
+    divider.textContent = '― 或输入 ASIN 从亚马逊采集 ―';
+  }
+}
+
 async function startJob() {
   var asin = document.getElementById('asinInput').value.trim();
   var marketplace = document.getElementById('marketplaceSelect').value;
-  if (!asin) { alert('请输入 ASIN'); return; }
+  var c1688Url = document.getElementById('c1688Url').value.trim();
+  var hasUploaded = uploadedFiles.length > 0;
+  cleanAfterCollect();
+
+  // 【校验1】1688链接和上传图片不能同时有值
+  if (c1688Url && hasUploaded) {
+    alert('1688 商品链接和拖拽上传图片不能同时使用，请只选择其中一种图片来源。');
+    return;
+  }
+  // 【校验2】无外部图片时必须输入ASIN（原逻辑）
+  if (!c1688Url && !hasUploaded && !asin) {
+    alert('请输入 ASIN');
+    return;
+  }
+  // 【校验3】有外部图片时必须输入ASIN
+  if ((c1688Url || hasUploaded) && !asin) {
+    alert('已提供外部图片来源（1688/上传），请输入亚马逊 ASIN 以采集参考数据（标题、关键词等）。');
+    return;
+  }
   // VPN check for all marketplaces (Amazon blocks Chinese IPs)
   var isCn = true;
   try {
@@ -1219,8 +1590,27 @@ async function startJob() {
   btn.disabled = true; btn.textContent = '⏳ 采集中...';
   resetProgress();
   startProgressTimer();
+
+  // 【1688 采集】有1688链接时先采集图片
+  if (c1688Url) {
+    var status = document.getElementById('c1688Status');
+    status.style.display = 'block'; status.textContent = '正在采集1688商品图片…';
+    try {
+      var c1688Res = await fetch('/api/collect-1688', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url:c1688Url})});
+      var c1688Data = await c1688Res.json();
+      if (c1688Data.images && c1688Data.images.length > 0) {
+        status.textContent = '已采集 ' + c1688Data.images.length + ' 张1688图片' + (c1688Data.title ? ' | ' + c1688Data.title : '');
+      } else {
+        status.textContent = '1688未采集到图片，继续参考数据采集…';
+      }
+    } catch(e) { status.textContent = '1688采集失败: ' + e.message; }
+  }
+
+  var hasExternalImages = c1688Url || hasUploaded;
   var formData = new FormData();
   formData.append('asin', asin); formData.append('marketplace', marketplace);
+  formData.append('c1688_url', c1688Url);
+  formData.append('skip_amazon_images', hasExternalImages ? '1' : '0');
   // Append uploaded files if any
   uploadedFiles.forEach(function(f){
     formData.append('images', f);
@@ -1242,7 +1632,7 @@ function startSSE(jobId) {
     updateProgress(msg);
     if (msg.step==='mcp'&&msg.progress>=40) loadAsinCategory(jobId);
     if (msg.step==='expert'&&msg.progress>=55) loadExpert(jobId);
-    if (msg.step==='prompt'&&msg.progress>=90) { document.getElementById('startBtn').disabled=false; document.getElementById('startBtn').textContent='📥 开始采集'; loadRefImages(jobId); loadPrompts(jobId); loadExpert(jobId); markStepDone('stepDone'); document.getElementById('progressFill').style.width='100%'; document.getElementById('progressPercent').textContent='100%'; stopProgressTimer(); }
+    if (msg.step==='prompt'&&msg.progress>=90) { document.getElementById('startBtn').disabled=false; document.getElementById('startBtn').textContent='📥 开始采集'; loadRefImages(jobId); loadPrompts(jobId); loadExpert(jobId); markStepDone('stepDone'); document.getElementById('progressFill').style.width='100%'; document.getElementById('progressPercent').textContent='100%'; stopProgressTimer(); cleanAfterCollect(); }
     if (msg.step==='error') { eventSource.close(); document.getElementById('startBtn').disabled=false; document.getElementById('startBtn').textContent='📥 开始采集'; stopProgressTimer(); }
   };
   eventSource.onerror = function() { setTimeout(function(){if(eventSource&&eventSource.readyState===EventSource.CLOSED)document.getElementById('startBtn').disabled=false;},3000); };
@@ -1270,6 +1660,14 @@ function updateProgress(msg) {
   document.getElementById('progressFill').style.width = msg.progress+'%';
   document.getElementById('progressPercent').textContent = msg.progress+'%';
 }
+function cleanAfterCollect() {
+  document.getElementById('c1688Url').value = '';
+  document.getElementById('c1688Status').style.display = 'none';
+  uploadedFiles = [];
+  document.getElementById('previewThumbs').innerHTML = '';
+  updateAsinDivider();
+}
+
 function resetProgress() {
   ['stepCollect','stepMcp','stepExpert','stepPrompt','stepGenerate','stepDone'].forEach(function(id){
     document.querySelector('#'+id+' .step-dot').className = 'step-dot';
@@ -1371,7 +1769,7 @@ async function loadPrompts(jobId) {
     var container = document.getElementById('promptList');
     var promptCard = function(p,i,isOpen){
       var pid = 'promptBody_'+i;
-      return '<div class="prompt-card"><div class="ptype'+(isOpen?'':' collapsed')+'" onclick="togglePromptBody(\''+pid+'\',this)"><span class="toggle-arrow">▼</span> '+(p.label_cn||p.type)+' · '+(p.module_size||'')+' · '+p.aspect+'</div><div class="prompt-body'+(isOpen?'':' collapsed')+'" id="'+pid+'"><div style="display:flex;align-items:flex-start;gap:6px;margin-top:8px;"><textarea class="ptext" id="promptText_'+i+'" rows="5" style="flex:1;">'+escHtml(p.prompt)+'</textarea><button class="copy-btn" onclick="copyPrompt('+i+')" title="复制" style="margin-top:2px;">📋</button></div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;"><div class="pmeta" style="margin:0;">Prompt #'+(i+1)+' · gpt-image-2</div></div></div><div class="pactions"><button class="btn-send-chatgpt" onclick="sendToChatGPT('+i+')">🚀 发送生成'+((genCount[i]||0)>0?' (已生成' + genCount[i] + '次)':'')+'</button></div></div>';
+      return '<div class="prompt-card"><div class="ptype'+(isOpen?'':' collapsed')+'" onclick="togglePromptBody(\''+pid+'\',this)"><span class="toggle-arrow">▼</span> '+(p.label_cn||p.type)+' · '+(p.module_size||'')+' · '+p.aspect+'</div><div class="prompt-body'+(isOpen?'':' collapsed')+'" id="'+pid+'"><div style="display:flex;gap:8px;margin-top:8px;"><div style="flex:1;min-width:0;display:flex;flex-direction:column;"><textarea class="ptext" id="promptText_'+i+'" rows="5">'+escHtml(p.prompt)+'</textarea></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><span style="font-size:.65rem;color:var(--muted);">中文参考</span><div style="display:flex;gap:4px;"><button class="translate-btn" onclick="translatePrompt('+i+')" title="翻译英文提示词为中文">翻译中文</button><button class="copy-btn" onclick="copyPromptCN('+i+')" title="复制中文" style="width:24px;height:24px;font-size:.7rem;">📋</button></div></div><textarea class="ptext" id="promptTextCN_'+i+'" rows="5" placeholder="点击翻译按钮翻译英文提示词..."></textarea></div></div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;"><div class="pmeta" style="margin:0;">Prompt #'+(i+1)+' · '+(document.getElementById('tglGemini').checked?'Gemini-3-Nano':'GPT-Image-2')+'</div></div></div><div class="pactions"><button class="btn-send-chatgpt" onclick="sendToChatGPT('+i+')">🚀 发送生成'+((genCount[i]||0)>0?' (已生成' + genCount[i] + '次)':'')+'</button></div></div>';
     };
     var html = '';
     // Prompts 1-2: always open
@@ -1417,6 +1815,38 @@ function copyPrompt(i) {
   if (ta) { ta.select(); navigator.clipboard.writeText(ta.value).then(function(){showToast('已复制','success');}); }
 }
 
+async function translatePrompt(i) {
+  var src = document.getElementById('promptText_'+i);
+  var dst = document.getElementById('promptTextCN_'+i);
+  var text = (src.value||'').trim();
+  if (!text) { showToast('英文提示词为空，无需翻译', 'warning'); return; }
+  dst.value = '翻译中...';
+  try {
+    var res = await fetch('/api/translate-prompt', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({text:text, target:'zh-CN'})});
+    var data = await res.json();
+    dst.value = data.translated || text;
+  } catch(e) { dst.value = text; showToast('翻译失败，请重试', 'error'); }
+}
+
+function copyPromptCN(i) {
+  var ta = document.getElementById('promptTextCN_'+i);
+  if (ta) { navigator.clipboard.writeText(ta.value).then(function(){showToast('已复制中文翻译','success');}); }
+}
+
+async function translatePromptCNtoEN(i) {
+  var src = document.getElementById('promptTextCN_'+i);
+  var dst = document.getElementById('promptText_'+i);
+  var text = (src.value||'').trim();
+  if (!text) { showToast('右侧中文提示词为空，请先翻译或输入中文', 'warning'); return; }
+  showToast('正在从右侧中文翻译为英文，翻译结果仅供参考，请核对准确性！', 'info');
+  try {
+    var res = await fetch('/api/translate-prompt', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({text:text, target:'en'})});
+    var data = await res.json();
+    dst.value = data.translated || text;
+    showToast('已从中文翻译为英文，请核对翻译准确性！', 'warning');
+  } catch(e) { showToast('翻译失败，请重试', 'error'); }
+}
+
 // ── Image Generation ──
 async function sendToChatGPT(promptIndex) {
   if (!currentAsin) { alert('任务状态丢失，请重新提交'); return; }
@@ -1425,7 +1855,8 @@ async function sendToChatGPT(promptIndex) {
   var editedPrompt = textarea?textarea.value.trim():'';
   if (!editedPrompt) { alert('提示词为空，请检查'); return; }
 
-  showToast('图片生成速度取决于 GPT Image-2 平台，预计 10-60 秒，请耐心等待…', 'info');
+  var genModelName = (document.getElementById('tglGemini')||{}).checked ? 'Gemini-3 Nano Banana' : 'GPT-Image-2';
+  showToast('图片生成速度取决于 ' + genModelName + ' 平台，预计 10-60 秒，请耐心等待…', 'info');
 
   var genDot = document.querySelector('#stepGenerate .step-dot');
   if (genDot) genDot.className = 'step-dot active';
@@ -1835,6 +2266,609 @@ function renderDataInsights(di) {
 
   el.innerHTML = html;
 }
+
+// ═══════════════════════════════════════════════════════════════
+// Prompt Template Library — State & Constants
+// ═══════════════════════════════════════════════════════════════
+var TPL_IMG_TYPES = [
+  {key:'main',label_cn:'主图',module:'Main Image'},
+  {key:'aplus_header',label_cn:'A+ 顶部横幅',module:'Standard Image Header'},
+  {key:'aplus_single',label_cn:'A+ 标准单图',module:'Standard Single Image'},
+  {key:'aplus_three',label_cn:'A+ 三栏图文',module:'Standard Three Images & Text'},
+  {key:'aplus_four',label_cn:'A+ 四栏图文',module:'Standard Four Images & Text'},
+  {key:'aplus_wrap',label_cn:'A+ 单图+文本',module:'Standard Image & Text'},
+  {key:'aplus_compare',label_cn:'A+ 对比图表',module:'Standard Comparison Chart'},
+  {key:'brand_story_bg',label_cn:'品牌故事背景',module:'Brand Story Background'},
+  {key:'brand_story_card',label_cn:'品牌故事卡片',module:'Brand Story Card'},
+  {key:'hover_zoom',label_cn:'高清放大图',module:'Hover/Zoom'}
+];
+var TPL_DATA = {};
+var TPL_DEFAULTS = {};
+var TPL_EXPANDED = {};
+var TPL_HOVER_TIMER = null;
+var TPL_COLLAPSED = localStorage.getItem('tplCollapsed') === '1';
+
+function tplTogglePanel() {
+  TPL_COLLAPSED = !TPL_COLLAPSED;
+  var panel = document.getElementById('templatePanel');
+  var btn = panel.querySelector('.tpl-toggle-btn');
+  if (TPL_COLLAPSED) {
+    panel.classList.add('collapsed');
+    if (btn) btn.textContent = '▶';
+  } else {
+    panel.classList.remove('collapsed');
+    if (btn) btn.textContent = '◀';
+  }
+  localStorage.setItem('tplCollapsed', TPL_COLLAPSED ? '1' : '0');
+}
+
+function tplInitCollapsed() {
+  if (TPL_COLLAPSED) {
+    var panel = document.getElementById('templatePanel');
+    if (panel) { panel.classList.add('collapsed'); }
+    setTimeout(function() {
+      var btn = panel.querySelector('.tpl-toggle-btn');
+      if (btn) btn.textContent = '▶';
+    }, 300);
+  }
+}
+
+async function tplLoad() {
+  try {
+    var res = await fetch('/api/prompt-templates');
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    var data = await res.json();
+    TPL_DEFAULTS = data._defaults || {};
+    delete data._defaults;
+    TPL_DATA = data;
+    for (var t in TPL_DATA) {
+      if (TPL_DATA[t].items && TPL_DATA[t].items.length>0) TPL_EXPANDED[t] = true;
+    }
+    tplRender();
+    tplApplyDefaults();
+    tplInitCollapsed();
+  } catch(e) {
+    console.error('tplLoad failed:', e);
+    showToast('模板库加载失败，请检查网络连接', 'error');
+  }
+}
+
+function tplRender(filter) {
+  var el = document.getElementById('tplScroll');
+  if (!el) return;
+  var q = (filter||'').toLowerCase();
+  var html = '';
+  for (var ti=0; ti<TPL_IMG_TYPES.length; ti++) {
+    var t = TPL_IMG_TYPES[ti];
+    var items = (TPL_DATA[t.key] && TPL_DATA[t.key].items) ? TPL_DATA[t.key].items : [];
+    if (q) {
+      items = items.filter(function(it){
+        return it.name.toLowerCase().indexOf(q)>=0 || (it.description||'').toLowerCase().indexOf(q)>=0;
+      });
+    }
+    var expanded = TPL_EXPANDED[t.key] || (!!q && items.length>0);
+    html += '<div class="tpl-group">';
+    html += '<div class="tpl-group-head" onclick="tplToggleGroup(\''+t.key+'\')">';
+    html += '<span class="g-arrow" style="transform:'+(expanded?'rotate(0deg)':'rotate(-90deg)')+';">▼</span>';
+    html += '<span class="g-label">'+escHtml(t.label_cn)+'</span>';
+    html += '<span class="g-count">('+items.length+')</span>';
+    html += '<button class="g-add" onclick="event.stopPropagation();tplOpenNewModal(\''+t.key+'\')">+新</button>';
+    html += '</div>';
+    html += '<div class="tpl-group-body'+(expanded?'':' collapsed')+'" id="tplGroup_'+t.key+'" style="max-height:'+(expanded?'none':'0')+';">';
+    if (items.length===0) {
+      html += '<div class="tpl-empty">点击 <b>+新</b> 添加第一条模板</div>';
+    } else {
+      for (var i=0; i<items.length; i++) {
+        var it = items[i];
+        var isDefault = TPL_DEFAULTS[t.key]===i;
+        html += '<div class="tpl-item" id="tplItem_'+t.key+'_'+i+'" data-tpl-key="'+t.key+'" data-tpl-idx="'+i+'">';
+        html += '<span class="ti-pin'+(it.pinned?' active':'')+'" title="'+(it.pinned?'取消置顶':'置顶')+'" onclick="event.stopPropagation();tplTogglePin(\''+t.key+'\','+i+')"></span>';
+        html += '<div class="ti-body" onmouseenter="tplHover(event,this)" onmouseleave="tplUnhover()" data-prompt="'+escHtml(it.prompt).replace(/"/g,'&quot;')+'">';
+        html += '<div class="ti-name" ondblclick="event.stopPropagation();tplRename(event,\''+t.key+'\','+i+')">'+escHtml(it.name)+'</div>';
+        html += '<div class="ti-meta">已用 '+(it.use_count||0)+' 次';
+        if (it.last_used) html += ' · '+tplTimeAgo(it.last_used);
+        html += '</div>';
+        html += '</div>';
+        html += '<span class="ti-star'+(isDefault?' active':'')+'" title="'+(isDefault?'当前默认':'设为默认')+'" onclick="event.stopPropagation();tplSetDefault(\''+t.key+'\','+i+')">⭐</span>';
+        html += '<span class="ti-actions">';
+        html += '<button class="btn-edit" title="编辑模板" onclick="event.stopPropagation();tplOpenEditModal(\''+t.key+'\','+i+')">✎</button>';
+        html += '<button class="btn-clone" title="复制模板" onclick="event.stopPropagation();tplClone(\''+t.key+'\','+i+')">⎘</button>';
+        html += '<button class="btn-del" title="删除" onclick="event.stopPropagation();tplDelete(\''+t.key+'\','+i+')">✕</button>';
+        html += '</span>';
+        html += '</div>';
+      }
+    }
+    html += '</div></div>';
+  }
+  el.innerHTML = html;
+}
+
+function tplToggleGroup(tkey) {
+  var body = document.getElementById('tplGroup_'+tkey);
+  if (!body) return;
+  if (TPL_EXPANDED[tkey]) {
+    body.style.maxHeight = '0';
+    body.classList.add('collapsed');
+    TPL_EXPANDED[tkey] = false;
+  } else {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.classList.remove('collapsed');
+    TPL_EXPANDED[tkey] = true;
+  }
+  var head = body.previousElementSibling;
+  if (head) {
+    var arrow = head.querySelector('.g-arrow');
+    if (arrow) arrow.style.transform = TPL_EXPANDED[tkey] ? 'rotate(0deg)' : 'rotate(-90deg)';
+  }
+}
+
+function tplApplyDefaults() {
+  for (var t in TPL_DEFAULTS) {
+    var idx = TPL_DEFAULTS[t];
+    var items = TPL_DATA[t] && TPL_DATA[t].items ? TPL_DATA[t].items : [];
+    if (idx>=0 && idx<items.length) {
+      tplFillCard(t, items[idx].prompt);
+    }
+  }
+}
+
+function tplFillCard(tkey, promptText) {
+  var textareas = document.querySelectorAll('.ptext');
+  for (var i=0; i<textareas.length; i++) {
+    var card = textareas[i].closest('.prompt-card');
+    if (!card) continue;
+    if (card.getAttribute('data-tkey') === tkey) {
+      textareas[i].value = promptText;
+      return;
+    }
+  }
+  // Fallback: match by label_cn in ptype text (for cards before tplInjectSelectors runs)
+  for (var i2=0; i2<textareas.length; i2++) {
+    var card2 = textareas[i2].closest('.prompt-card');
+    if (!card2 || card2.hasAttribute('data-tkey')) continue;
+    var ptypeEl = card2.querySelector('.ptype');
+    if (!ptypeEl) continue;
+    for (var j=0; j<TPL_IMG_TYPES.length; j++) {
+      if (ptypeEl.textContent.indexOf(TPL_IMG_TYPES[j].label_cn)>=0 && TPL_IMG_TYPES[j].key===tkey) {
+        textareas[i2].value = promptText;
+        card2.setAttribute('data-tkey', tkey);
+        return;
+      }
+    }
+  }
+}
+
+async function tplSelect(tkey, index) {
+  index = parseInt(index, 10);
+  var items = TPL_DATA[tkey] && TPL_DATA[tkey].items ? TPL_DATA[tkey].items : [];
+  if (isNaN(index) || index<0 || index>=items.length) return;
+  var prompt = items[index].prompt;
+  if (!prompt) { showToast('模板提示词为空', 'error'); return; }
+  // Direct approach: find matching textarea by data-tkey
+  var found = false;
+  var textareas = document.querySelectorAll('.ptext');
+  for (var i=0; i<textareas.length; i++) {
+    var card = textareas[i].closest('.prompt-card');
+    if (card && card.getAttribute('data-tkey') === tkey) {
+      textareas[i].value = prompt;
+      found = true;
+    }
+  }
+  // Fallback: match by label_cn
+  if (!found) {
+    for (var i2=0; i2<textareas.length; i2++) {
+      var card2 = textareas[i2].closest('.prompt-card');
+      if (!card2) continue;
+      var ptypeEl = card2.querySelector('.ptype');
+      if (!ptypeEl) continue;
+      for (var j=0; j<TPL_IMG_TYPES.length; j++) {
+        if (ptypeEl.textContent.indexOf(TPL_IMG_TYPES[j].label_cn)>=0 && TPL_IMG_TYPES[j].key===tkey) {
+          textareas[i2].value = prompt;
+          card2.setAttribute('data-tkey', tkey);
+          found = true;
+          break;
+        }
+      }
+      if (found) break;
+    }
+  }
+  // Also update any selector dropdown on matching cards
+  var sel = document.querySelector('.prompt-card[data-tkey="'+tkey+'"] .tpl-sel-row select');
+  if (sel) sel.value = index;
+  document.querySelectorAll('.tpl-item.selected').forEach(function(el){el.classList.remove('selected');});
+  var itemEl = document.getElementById('tplItem_'+tkey+'_'+index);
+  if (itemEl) itemEl.classList.add('selected');
+  try {
+    await fetch('/api/prompt-templates/'+tkey+'/select', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({index:index})});
+    items[index].use_count = (items[index].use_count||0)+1;
+    items[index].last_used = new Date().toISOString();
+    tplRender();
+  } catch(e){}
+  showToast(found ? '已套用: '+items[index].name : '未找到对应提示词框 (tkey='+tkey+')', found ? 'success' : 'error');
+}
+
+async function tplSetDefault(tkey, index) {
+  try {
+    await fetch('/api/prompt-templates/'+tkey+'/default', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({index:index})});
+    TPL_DEFAULTS[tkey] = index;
+    tplRender();
+    showToast('已设为默认', 'success');
+  } catch(e){}
+}
+
+async function tplTogglePin(tkey, index) {
+  var items = TPL_DATA[tkey] && TPL_DATA[tkey].items ? TPL_DATA[tkey].items : [];
+  if (index<0 || index>=items.length) return;
+  var newPinned = !items[index].pinned;
+  try {
+    await fetch('/api/prompt-templates/'+tkey+'/'+index, {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({pinned:newPinned})});
+    items[index].pinned = newPinned;
+    tplRender();
+  } catch(e){}
+}
+
+async function tplClone(tkey, index) {
+  var items = TPL_DATA[tkey] && TPL_DATA[tkey].items ? TPL_DATA[tkey].items : [];
+  if (index<0 || index>=items.length) return;
+  var src = items[index];
+  try {
+    var res = await fetch('/api/prompt-templates', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:tkey,name:src.name+' (副本)',prompt:src.prompt,description:src.description||''})});
+    if (res.ok) { tplRefresh(); showToast('已复制', 'success'); }
+  } catch(e){}
+}
+
+async function tplDelete(tkey, index) {
+  if (!confirm('确定删除此模板？')) return;
+  try {
+    var res = await fetch('/api/prompt-templates/'+tkey+'/'+index, {method:'DELETE'});
+    if (res.ok) { tplRefresh(); showToast('已删除', 'success'); }
+  } catch(e){}
+}
+
+function tplRename(e, tkey, index) {
+  var items = TPL_DATA[tkey] && TPL_DATA[tkey].items ? TPL_DATA[tkey].items : [];
+  if (index<0 || index>=items.length) return;
+  var nameEl = e.target;
+  var oldName = items[index].name;
+  nameEl.classList.add('editing');
+  nameEl.innerHTML = '<input value="'+escHtml(oldName).replace(/"/g,'&quot;')+'" onblur="tplFinishRename(event,\''+tkey+'\','+index+')" onkeydown="if(event.key===\'Enter\')this.blur()">';
+  var inp = nameEl.querySelector('input');
+  if (inp) { inp.focus(); inp.select(); }
+}
+
+async function tplFinishRename(e, tkey, index) {
+  var newName = (e.target.value||'').trim();
+  var nameEl = e.target.parentElement;
+  nameEl.classList.remove('editing');
+  if (!newName) { tplRender(); return; }
+  var items = TPL_DATA[tkey] && TPL_DATA[tkey].items ? TPL_DATA[tkey].items : [];
+  try {
+    var res = await fetch('/api/prompt-templates/'+tkey+'/'+index, {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:newName})});
+    if (res.ok) { items[index].name = newName; tplRender(); }
+  } catch(e){ tplRender(); }
+}
+
+async function tplRefresh() {
+  try {
+    var res = await fetch('/api/prompt-templates');
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    var data = await res.json();
+    TPL_DEFAULTS = data._defaults || {};
+    delete data._defaults;
+    TPL_DATA = data;
+    tplRender();
+  } catch(e) {
+    console.error('tplRefresh failed:', e);
+    showToast('刷新模板库失败', 'error');
+  }
+}
+
+function tplHover(e, el) {
+  var prompt = el.getAttribute('data-prompt')||'';
+  if (!prompt.trim()) return;
+  clearTimeout(TPL_HOVER_TIMER);
+  TPL_HOVER_TIMER = setTimeout(function(){
+    var tip = document.getElementById('tplPreviewTip');
+    if (!tip) return;
+    var lines = prompt.split('\n').slice(0,6);
+    var preview = lines.join('\n');
+    if (lines.length>=6) preview += '\n<span class="fade">...</span>';
+    tip.innerHTML = preview.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    tip.style.display = 'block';
+    var x = e.clientX + 18, y = e.clientY - 10;
+    if (x+360 > window.innerWidth) x = e.clientX - 370;
+    if (y+180 > window.innerHeight) y = window.innerHeight - 190;
+    tip.style.left = x+'px';
+    tip.style.top = y+'px';
+  }, 400);
+}
+
+function tplUnhover() {
+  clearTimeout(TPL_HOVER_TIMER);
+  var tip = document.getElementById('tplPreviewTip');
+  if (tip) tip.style.display = 'none';
+}
+
+function tplFilter(query) {
+  tplRender(query||'');
+}
+
+var TPL_EDIT_KEY = null;
+var TPL_EDIT_IDX = -1;
+
+function tplOpenNewModal(prefillType) {
+  TPL_EDIT_KEY = null; TPL_EDIT_IDX = -1;
+  var sel = document.getElementById('tplNewType');
+  if (!sel) return;
+  sel.innerHTML = TPL_IMG_TYPES.map(function(t){
+    return '<option value="'+t.key+'"'+(t.key===prefillType?' selected':'')+'>'+t.label_cn+' · '+t.module+'</option>';
+  }).join('');
+  sel.disabled = false;
+  document.getElementById('tplNewName').value = '';
+  document.getElementById('tplNewDesc').value = '';
+  document.getElementById('tplNewPrompt').value = '';
+  document.getElementById('tplModalTitle').textContent = '新建提示词模板';
+  var modal = document.getElementById('tplNewModal');
+  if (modal) modal.classList.add('open');
+}
+
+function tplOpenEditModal(tkey, index) {
+  var items = TPL_DATA[tkey] && TPL_DATA[tkey].items ? TPL_DATA[tkey].items : [];
+  if (index < 0 || index >= items.length) return;
+  var it = items[index];
+  TPL_EDIT_KEY = tkey;
+  TPL_EDIT_IDX = index;
+  var sel = document.getElementById('tplNewType');
+  if (!sel) return;
+  sel.innerHTML = TPL_IMG_TYPES.map(function(t){
+    return '<option value="'+t.key+'"'+(t.key===tkey?' selected':'')+'>'+t.label_cn+' · '+t.module+'</option>';
+  }).join('');
+  sel.disabled = true;
+  document.getElementById('tplNewName').value = it.name || '';
+  document.getElementById('tplNewDesc').value = it.description || '';
+  document.getElementById('tplNewPrompt').value = it.prompt || '';
+  document.getElementById('tplModalTitle').textContent = '编辑提示词模板';
+  var modal = document.getElementById('tplNewModal');
+  if (modal) modal.classList.add('open');
+}
+
+function tplCloseNewModal() {
+  var modal = document.getElementById('tplNewModal');
+  if (modal) modal.classList.remove('open');
+  TPL_EDIT_KEY = null; TPL_EDIT_IDX = -1;
+}
+
+async function tplSaveNew() {
+  var type = document.getElementById('tplNewType').value;
+  var name = document.getElementById('tplNewName').value.trim();
+  var desc = document.getElementById('tplNewDesc').value.trim();
+  var prompt = document.getElementById('tplNewPrompt').value.trim();
+  if (!name) { showToast('请输入模板名称', 'error'); return; }
+  if (!prompt) { showToast('请输入提示词内容', 'error'); return; }
+  try {
+    var isEdit = TPL_EDIT_KEY !== null && TPL_EDIT_IDX >= 0;
+    var url, method, body;
+    if (isEdit) {
+      url = '/api/prompt-templates/' + TPL_EDIT_KEY + '/' + TPL_EDIT_IDX;
+      method = 'PUT';
+      body = JSON.stringify({name:name, prompt:prompt, description:desc});
+    } else {
+      url = '/api/prompt-templates';
+      method = 'POST';
+      body = JSON.stringify({type:type, name:name, prompt:prompt, description:desc});
+    }
+    var res = await fetch(url, {method:method, headers:{'Content-Type':'application/json'}, body:body});
+    if (res.ok) {
+      tplCloseNewModal();
+      tplRefresh();
+      showToast(isEdit ? '模板已更新' : '模板已保存', 'success');
+    } else {
+      var err = await res.json();
+      showToast(err.error||'保存失败', 'error');
+    }
+  } catch(e){}
+}
+
+function tplSaveFromCard(promptIndex) {
+  var ta = document.getElementById('promptText_'+promptIndex);
+  if (!ta) return;
+  var promptText = ta.value.trim();
+  if (!promptText) { showToast('提示词为空', 'error'); return; }
+  var card = ta.closest('.prompt-card');
+  var ptypeEl = card ? card.querySelector('.ptype') : null;
+  var ptypeText = ptypeEl ? ptypeEl.textContent : '';
+  var matchedType = '';
+  for (var i=0; i<TPL_IMG_TYPES.length; i++) {
+    if (ptypeText.indexOf(TPL_IMG_TYPES[i].label_cn)>=0) { matchedType = TPL_IMG_TYPES[i].key; break; }
+  }
+  if (!matchedType) matchedType = 'main';
+  var name = prompt('模板名称（便于识别）:', matchedType ? TPL_IMG_TYPES.filter(function(t){return t.key===matchedType;})[0].label_cn+' 模板' : '');
+  if (!name || !name.trim()) return;
+  var desc = prompt('备注说明（选填）:', '')||'';
+  tplDoSave(matchedType, name.trim(), promptText, desc.trim());
+}
+
+async function tplDoSave(type, name, prompt, desc) {
+  try {
+    var res = await fetch('/api/prompt-templates', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:type,name:name,prompt:prompt,description:desc,asin:currentAsin||''})});
+    if (res.ok) { tplRefresh(); showToast('已保存: '+name, 'success'); }
+    else { var err = await res.json(); showToast(err.error||'保存失败', 'error'); }
+  } catch(e){}
+}
+
+function tplBatchSave() {
+  var checkboxes = document.querySelectorAll('.prompt-check:checked');
+  if (checkboxes.length===0) { showToast('请先勾选要保存的提示词', 'error'); return; }
+  var prefix = prompt('统一命名前缀（各条自动加序号）:', '');
+  if (prefix===null) return;
+  var batch = [];
+  checkboxes.forEach(function(cb){
+    var idx = parseInt(cb.getAttribute('data-pi'));
+    var ta = document.getElementById('promptText_'+idx);
+    if (!ta) return;
+    var promptText = ta.value.trim();
+    if (!promptText) return;
+    var card = ta.closest('.prompt-card');
+    var ptypeEl = card ? card.querySelector('.ptype') : null;
+    var ptypeText = ptypeEl ? ptypeEl.textContent : '';
+    var matchedType = '';
+    for (var i=0; i<TPL_IMG_TYPES.length; i++) {
+      if (ptypeText.indexOf(TPL_IMG_TYPES[i].label_cn)>=0) { matchedType = TPL_IMG_TYPES[i].key; break; }
+    }
+    if (!matchedType) return;
+    batch.push({type:matchedType, name:(prefix||'模板')+(batch.length+1), prompt:promptText});
+  });
+  if (batch.length===0) { showToast('无有效提示词', 'error'); return; }
+  tplDoBatchSave(batch);
+}
+
+async function tplDoBatchSave(batch) {
+  try {
+    var res = await fetch('/api/prompt-templates/batch', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(batch)});
+    if (res.ok) { var data = await res.json(); tplRefresh(); showToast('批量保存 '+data.count+' 条', 'success'); }
+  } catch(e){}
+}
+
+async function tplExport() {
+  try {
+    var res = await fetch('/api/prompt-templates/export', {method:'POST'});
+    var data = await res.json();
+    var blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'prompt-templates-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+    showToast('模板已导出', 'success');
+  } catch(e){}
+}
+
+async function tplImport(input) {
+  var file = input.files[0];
+  if (!file) return;
+  try {
+    var text = await file.text();
+    var data = JSON.parse(text);
+    if (!data.templates) { showToast('无效的模板文件', 'error'); return; }
+    var res = await fetch('/api/prompt-templates/import', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    if (res.ok) {
+      var result = await res.json();
+      tplRefresh();
+      showToast('导入: +'+result.added+' 跳过 '+result.skipped, 'success');
+    }
+  } catch(e){ showToast('导入失败: '+e.message, 'error'); }
+  input.value = '';
+}
+
+function tplTimeAgo(iso) {
+  if (!iso) return '';
+  try {
+    var dt = new Date(iso), now = new Date(), diff = now - dt;
+    var mins = Math.floor(diff/60000);
+    if (mins<1) return '刚刚';
+    if (mins<60) return mins+' 分钟前';
+    var hours = Math.floor(mins/60);
+    if (hours<24) return hours+' 小时前';
+    var days = Math.floor(hours/24);
+    if (days<7) return days+' 天前';
+    if (days<30) return Math.floor(days/7)+' 周前';
+    return Math.floor(days/30)+' 月前';
+  } catch(e){ return ''; }
+}
+
+// Patch loadPrompts: inject template selectors + batch toolbar after render
+var _origLoadPrompts = loadPrompts;
+loadPrompts = async function(jobId) {
+  await _origLoadPrompts(jobId);
+  setTimeout(function(){
+    tplInjectSelectors();
+    tplLoad();
+  }, 100);
+};
+
+function tplInjectSelectors() {
+  var promptList = document.getElementById('promptList');
+  if (!promptList) return;
+  // Batch toolbar
+  if (!promptList.querySelector('.batch-bar')) {
+    var bar = document.createElement('div');
+    bar.className = 'batch-bar';
+    bar.innerHTML = '<label><input type="checkbox" class="prompt-check" id="promptCheckAll" onchange="var c=this.checked;document.querySelectorAll(\'.prompt-check:not(#promptCheckAll)\').forEach(function(cb){cb.checked=c;});"> 全选</label><button class="btn-batch-save" onclick="tplBatchSave()">💾 批量保存</button><button class="btn-batch-new" onclick="tplOpenNewModal()">+ 新建模板</button>';
+    promptList.insertBefore(bar, promptList.firstChild);
+  }
+  // Per-card: checkbox + template selector + save button
+  var cards = promptList.querySelectorAll('.prompt-card');
+  cards.forEach(function(card, i) {
+    var ptypeEl = card.querySelector('.ptype');
+    var ptypeText = ptypeEl ? ptypeEl.textContent : '';
+    var tkey = '';
+    for (var j=0; j<TPL_IMG_TYPES.length; j++) {
+      if (ptypeText.indexOf(TPL_IMG_TYPES[j].label_cn)>=0) { tkey = TPL_IMG_TYPES[j].key; break; }
+    }
+    if (!tkey) return;
+    card.setAttribute('data-tkey', tkey);
+    // Checkbox on header
+    if (!card.querySelector('.prompt-check')) {
+      var cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.className = 'prompt-check';
+      cb.setAttribute('data-pi', i);
+      ptypeEl.insertBefore(cb, ptypeEl.firstChild);
+    }
+    // Template selector
+    var body = card.querySelector('.prompt-body');
+    if (body && !body.querySelector('.tpl-sel-row')) {
+      var items = (TPL_DATA[tkey] && TPL_DATA[tkey].items) ? TPL_DATA[tkey].items : [];
+      var selRow = document.createElement('div');
+      selRow.className = 'tpl-sel-row';
+      var opts = '<option value="">无（使用本次生成）</option>';
+      for (var k=0; k<items.length; k++) {
+        opts += '<option value="'+k+'">'+escHtml(items[k].name)+(TPL_DEFAULTS[tkey]===k?' ⭐':'')+'</option>';
+      }
+      selRow.innerHTML = '<span class="sel-hint">模板:</span><select data-tpl-key="'+tkey+'">'+opts+'</select><span class="tpl-hint-en">图生图以英文提示词为主</span><button class="tpl-btn-cnen" onclick="translatePromptCNtoEN('+i+')" title="将右侧中文翻译为英文填入左侧">中→英</button><button class="copy-btn" onclick="copyPrompt('+i+')" title="复制英文" style="width:24px;height:24px;font-size:.7rem;flex-shrink:0;">📋</button>';
+      if (TPL_DEFAULTS[tkey]!==undefined) {
+        var defIdx = TPL_DEFAULTS[tkey];
+        if (defIdx>=0 && defIdx<items.length) {
+          selRow.querySelector('select').value = defIdx;
+          var ta = body.querySelector('.ptext');
+          if (ta && items[defIdx]) ta.value = items[defIdx].prompt;
+        }
+      }
+      var txtArea = body.querySelector('.ptext');
+      if (txtArea) txtArea.parentElement.insertBefore(selRow, txtArea);
+    }
+    // Save button
+    var pactions = card.querySelector('.pactions');
+    if (pactions && !pactions.querySelector('.btn-save-tpl')) {
+      var saveBtn = document.createElement('button');
+      saveBtn.className = 'btn-save-tpl';
+      saveBtn.textContent = '存为模板';
+      saveBtn.onclick = (function(idx){ return function(){ tplSaveFromCard(idx); }; })(i);
+      pactions.appendChild(saveBtn);
+    }
+  });
+}
+
+// Event delegation for template item clicks (replaces inline onclick)
+document.getElementById('tplScroll').addEventListener('click', function(e){
+  var item = e.target.closest('.tpl-item');
+  if (!item) return;
+  var key = item.getAttribute('data-tpl-key');
+  var idx = item.getAttribute('data-tpl-idx');
+  if (key && idx !== null) tplSelect(key, idx);
+});
+
+// Event delegation for template selector dropdowns (replaces inline onchange)
+document.getElementById('promptList').addEventListener('change', function(e){
+  if (!e.target.matches('select[data-tpl-key]')) return;
+  var key = e.target.getAttribute('data-tpl-key');
+  var val = e.target.value;
+  if (val !== '') tplSelect(key, val);
+});
+
+document.addEventListener('DOMContentLoaded', function(){ tplLoad(); });
+document.getElementById('tplNewModal').addEventListener('click', function(e){ if(e.target===this) tplCloseNewModal(); });
+
 </script>
 </body>
 </html>

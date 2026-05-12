@@ -5,7 +5,8 @@
     "api_key": "",
     "model": "gpt-image-2-official",
     "output_format": "png",
-    "base_url": "https://api.apimart.ai"
+    "base_url": "https://api.apimart.ai",
+    "enabled": false
   },
   "sorftime_mcp": {
     "endpoint": "https://mcp.sorftime.com",
@@ -21,5 +22,12 @@
     "endpoint": "https://mcp.sellersprite.com/mcp",
     "api_key": "",
     "enabled": true
+  },
+  "gemini": {
+    "base_url": "https://api.apimart.ai",
+    "model": "gemini-3-pro-image-preview",
+    "resolution": "1K",
+    "enabled": true,
+    "api_key": ""
   }
 }
