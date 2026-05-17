@@ -54,7 +54,8 @@ var _otaAssetSize = 0;
 async function checkUpdate() {
   try {
     var res = await fetch('https://api.github.com/repos/'+GITHUB_REPO+'/releases/latest');
-    if (res.status === 404) {
+    if (res.status === 404 || res.status === 403) {
+      // No release published yet or rate-limited — not an error
       document.getElementById('verUpToDate').style.display = 'inline';
       return;
     }

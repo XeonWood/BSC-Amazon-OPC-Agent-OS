@@ -78,5 +78,20 @@ Amazon 产品运营工具：智能图片生成 + Listing 优化。
 ---
 <img width="1254" height="1254" alt="未命名" src="https://github.com/user-attachments/assets/dad1217b-e17a-4f1d-9323-7ea8d9854652" />
 
+
+
+## v3.0 修复批次 (2026-05-17)
+
+稳定性修复：
+
+- 侧边栏浏览器兼容性（localStorage 异常保护、z-index 按钮遮挡修复）
+- 数据源标签始终显示 SIF（SIF 为主数据源，不再被 Sorftime/SellerSprite 排除）
+- TikTok 类目查询和相似产品取数修复（Sorftime TikTok 工具返回格式兼容）
+- 静态资源缓存控制（EXE 启动时不再出现 CSS 404）
+- 前端渲染 HTML 泄漏修复（趋势动量、商标状态等彩色标签正常显示）
+- 广告分析自然流量占比空值处理（无数据时显示 "—" 而非 0%）
+- 广告渠道趋势推断标签（趋势代理分区分显示）
+
+
 **版权所有 © 商海蟹**
 
