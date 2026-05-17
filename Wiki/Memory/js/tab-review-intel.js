@@ -22,7 +22,7 @@ function updateRISourceBadges(cfg) {
 }
 
 function getRISettings() {
-  fetch('/api/settings').then(function(r){return r.json();}).then(updateRISourceBadges).catch(function(){});
+  return fetch('/api/settings').then(function(r){return r.json();}).then(updateRISourceBadges).catch(function(){});
 }
 
 function switchRITab(name) {
