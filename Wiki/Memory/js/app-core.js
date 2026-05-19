@@ -13,7 +13,6 @@ async function loadLicenseStatus() {
       btn.textContent = '更换授权';
       updateTabVisibility(data.allowed_tabs || []);
       checkFirstRunSetup();
-      setTimeout(showAnnouncement, 600);
     } else if (data.status === 'trial') {
       badge.textContent = data.message;
       badge.style.background = 'rgba(245,158,11,.15)';
@@ -22,7 +21,6 @@ async function loadLicenseStatus() {
       btn.textContent = '激活';
       updateTabVisibility(data.allowed_tabs || []);
       checkFirstRunSetup();
-      setTimeout(showAnnouncement, 600);
     } else if (data.status === 'expired') {
       badge.textContent = data.message;
       badge.style.background = 'rgba(239,68,68,.15)';
@@ -46,6 +44,7 @@ async function loadLicenseStatus() {
       btn.textContent = '激活';
       updateTabVisibility([]);
     }
+    setTimeout(autoShowAnnouncement, 800);
   } catch(e) {}
 }
 // ── Version Check ──
@@ -527,12 +526,21 @@ async function clearMaterialCacheOnly() {
 
 // ── Announcement Modal ──
 function showAnnouncement() {
+  var m = document.getElementById('announceModal');
+  if (!m) { console.log('announceModal not found'); return; }
+  m.classList.add('open');
+}
+function autoShowAnnouncement() {
   try {
+    var ver = localStorage.getItem('announcementVersion');
+    if (ver !== 'v3.3') {
+      localStorage.removeItem('announcementDismissedUntil');
+      localStorage.setItem('announcementVersion', 'v3.3');
+    }
     var until = localStorage.getItem('announcementDismissedUntil');
     if (until && Date.now() < parseInt(until)) return;
   } catch(e) {}
-  var m = document.getElementById('announceModal');
-  if (m) m.classList.add('open');
+  showAnnouncement();
 }
 function closeAnnouncement() {
   var cb = document.getElementById('announceDontShow');
