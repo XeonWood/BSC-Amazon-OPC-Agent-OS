@@ -6,6 +6,20 @@
   --green:#22c55e;--red:#ef4444;
   --sidebar-w:270px;--header-h:56px;--tabs-h:48px;
   --shadow:0 2px 8px rgba(0,0,0,.4);
+  --card-special:#0F172A;--card-special-text:#fff;--card-special-muted:rgba(255,255,255,.4);
+  --overlay-hover:rgba(255,255,255,.04);--overlay-btn:rgba(255,255,255,.1);
+  --overlay-btn-hover:rgba(255,255,255,.18);--overlay-subtle:rgba(255,255,255,.02);
+  --text-soft:#d1d5db;--fill-off:#374151;
+}
+[data-theme="light"]{
+  --bg:#f3f4f6;--bg2:#ffffff;--bg3:#f9fafb;--text:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--accent:#1677ff;--accent2:#d97706;
+  --green:#16a34a;--red:#dc2626;
+  --shadow:0 1px 3px rgba(0,0,0,.06);
+  --card-special:#f0f4ff;--card-special-text:#1f2937;--card-special-muted:#6b7280;
+  --overlay-hover:rgba(0,0,0,.04);--overlay-btn:rgba(0,0,0,.05);
+  --overlay-btn-hover:rgba(0,0,0,.08);--overlay-subtle:rgba(0,0,0,.02);
+  --text-soft:#4b5563;--fill-off:#e5e7eb;
 }
 html,body{margin:0;padding:0;height:100%;overflow:hidden;
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
@@ -359,6 +373,22 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
   font-size:.68rem;font-weight:700;color:var(--accent2);letter-spacing:.04em;
   text-transform:uppercase;margin-bottom:10px;margin-top:4px;
 }
+
+.settings-section-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;cursor:pointer;user-select:none;
+  border-bottom:1px solid var(--border);margin-top:6px;
+}
+.settings-section-hdr:hover{color:var(--accent)}
+.settings-section-hdr .sect-arrow{
+  font-size:.6rem;transition:transform .2s;display:inline-block;margin-right:4px;
+}
+.settings-section-hdr.open .sect-arrow{transform:rotate(90deg)}
+.settings-section-hdr .sect-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--accent2)}
+.settings-section-hdr .sect-badge{font-size:.55rem;margin-left:6px}
+.settings-section-body{display:none;padding:6px 0 8px}
+.settings-section-body.open{display:block}
+
 .settings-field{margin-bottom:12px}
 .settings-field label{font-size:.72rem;color:var(--muted);display:block;margin-bottom:4px}
 .settings-field input,.settings-field select{
@@ -714,3 +744,9 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;
 .oa-sidebar.collapsed .tree-item-label{display:none}
 .oa-sidebar.collapsed .tree-item{position:relative}
 .oa-sidebar.collapsed .tree-item:hover::after{content:attr(data-tooltip);position:absolute;left:40px;top:50%;transform:translateY(-50%);background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:.7rem;white-space:nowrap;z-index:200;box-shadow:0 4px 16px rgba(0,0,0,.5);pointer-events:none}
+/* ── Announcement Modal ── */
+#announceModal .tpl-modal-body p{color:var(--text);margin:8px 0}
+#announceModal .tpl-modal-body ul,#announceModal .tpl-modal-body ol{color:var(--text);margin:6px 0;padding-left:18px}
+#announceModal .tpl-modal-body li{margin-bottom:4px}
+#announceModal .tpl-modal-body table{border-collapse:collapse}
+#announceModal .tpl-modal-body td{border-bottom:1px solid var(--border)}

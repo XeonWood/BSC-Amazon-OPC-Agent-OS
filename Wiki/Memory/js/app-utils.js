@@ -333,3 +333,28 @@ function initSidebarState() {
   }
 }
 initSidebarState();
+// ── Theme Toggle ──
+function toggleTheme() {
+  var html = document.documentElement;
+  var btn = document.getElementById('btnTheme');
+  try {
+    if (html.getAttribute('data-theme') === 'light') {
+      html.removeAttribute('data-theme');
+      if (btn) btn.textContent = '🌙';
+      try { localStorage.setItem('theme', 'dark'); } catch(e) {}
+    } else {
+      html.setAttribute('data-theme', 'light');
+      if (btn) btn.textContent = '☀️';
+      try { localStorage.setItem('theme', 'light'); } catch(e) {}
+    }
+  } catch(e) {}
+}
+function updateThemeIcon() {
+  var btn = document.getElementById('btnTheme');
+  if (!btn) return;
+  if (document.documentElement.getAttribute('data-theme') === 'light') {
+    btn.textContent = '☀️';
+  } else {
+    btn.textContent = '🌙';
+  }
+}

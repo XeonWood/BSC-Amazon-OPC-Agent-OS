@@ -144,8 +144,8 @@ function renderKwOverview(tab) {
 }
 
 function healthColor(h) {
-  const map = { core: '#22c55e', at_risk: '#ef4444', volatile: '#f59e0b', paid_dependent: '#f97316', standard: '#6b7280' };
-  return map[h] || '#6b7280';
+  const map = { core: '#22c55e', at_risk: '#ef4444', volatile: '#f59e0b', paid_dependent: '#f97316', standard: 'var(--muted)' };
+  return map[h] || 'var(--muted)';
 }
 
 // ── Tab2: 需求分析 ────────────────────────────────────────────────────────

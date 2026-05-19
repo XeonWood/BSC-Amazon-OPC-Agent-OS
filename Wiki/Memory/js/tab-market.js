@@ -52,6 +52,7 @@ async function startMarketAnalysis() {
   var marketplace = document.getElementById('mktMarketplace').value;
   if (!marketplace) { showToast('请选择站点'); return; }
   if (!asin && !keyword) { showToast('请输入 ASIN 或关键词'); return; }
+  if (asin && keyword) { showToast('ASIN 和关键词不能同时使用，请只输入其中一项'); return; }
   if (asin && !/^[A-Za-z0-9]{5,15}$/.test(asin)) { showToast('ASIN 格式错误（5-15 位字母数字）'); return; }
 
   try { await getMarketSettings(); } catch(e) {}
@@ -302,6 +303,11 @@ function _metric(k, v, cls, raw) {
     '<span class="mkt-metric-val ' + (cls||'') + '">' + (v == null || v === '' ? '—' : (raw ? String(v) : escHtml(String(v)))) + '</span></div>';
 }
 
+// ── Helper: "需要 ASIN" 提示卡片 ──
+function _mktNeedAsin(label) {
+  return '<div class="mkt-empty-card">🔍 ' + (label || '此项数据') + ' — 需要提供 ASIN 获取</div>';
+}
+
 // ── Tab 1: 供需比 ──
 function renderMarketSupply(data) {
   var vm = _mktVm(data, 'supply_tab') || {};
@@ -405,11 +411,13 @@ function renderMarketDifficulty(data) {
   var salesNum = sifVm.sales_30d != null ? sifVm.sales_30d : _mktNum(_mktVal(s0, 'boughtInPastMonth', 'bought_in_past_month', 'boughtInMonth'));
   var dailySales = sifVm.daily_sales_estimate != null ? sifVm.daily_sales_estimate : (salesNum ? Math.round(salesNum / 30) : null);
 
-  var sifHtml = _metric('最新流量分数', _fmtNum(lastScore)) +
-                _metric('近期平均分数', _fmtNum(avgScore)) +
-                _metric('近30天销量', _fmtNum(salesNum)) +
-                _metric('日均销量', dailySales != null ? dailySales + ' 单' : '—') +
-                _metric('更新日期', lastDate);
+  var sifHtml = vm._traffic_requires_asin
+    ? _mktNeedAsin('流量趋势与销量')
+    : _metric('最新流量分数', _fmtNum(lastScore)) +
+      _metric('近期平均分数', _fmtNum(avgScore)) +
+      _metric('近30天销量', _fmtNum(salesNum)) +
+      _metric('日均销量', dailySales != null ? dailySales + ' 单' : '—') +
+      _metric('更新日期', lastDate);
 
   var stList = _mktList(_mg(data, 'sorftime', 'product_search'));
   var stTop = _mktVm(data, 'difficulty_tab', 'sorftime_top1') || stList[0] || {};
@@ -490,6 +498,10 @@ function renderMarketDifficulty(data) {
 // ── Tab 3: 产品筛选五条件 ──
 function renderMarketFilter(data) {
   var vm = _mktVm(data, 'filter_tab') || {};
+  if (vm._requires_asin) {
+    document.getElementById('mktTabFilter').innerHTML = '<div class="mkt-section-title">SOP 1.3 五条件</div>' + _mktNeedAsin('产品筛选（价格/评论/上架/日销/类目）');
+    return;
+  }
   var rowsVm = Array.isArray(vm.rows) ? vm.rows : [];
 
   function renderJudgeRow(row, idx) {
@@ -541,12 +553,15 @@ function renderMarketCompete(data) {
       _metric('高评论密度(>1000)', _fmtNum(stHighReviewCount != null ? stHighReviewCount : 0) + ' 条', stHighReviewCount <= 5 ? 'green' : (stHighReviewCount > 10 ? 'red' : 'warn'))
     : _mktSourceEmpty('Sorftime');
 
+  var ssRequiresAsin = _mg(vm, 'sellersprite', '_requires_asin');
   var ssPool = _mg(vm, 'sellersprite', 'sample_pool_size');
   var ssHighReviewCount = _mg(vm, 'sellersprite', 'high_review_density_count');
-  var ssHtml = _mktSourceActive(data, 'sellersprite')
-    ? _metric('竞品样本池', _fmtNum(ssPool != null ? ssPool : _mktList(_mg(data, 'sellersprite', 'competitor_lookup')).length) + ' 个') +
-      _metric('高评论密度(>1000)', _fmtNum(ssHighReviewCount != null ? ssHighReviewCount : 0) + ' 条', ssHighReviewCount <= 5 ? 'green' : (ssHighReviewCount > 10 ? 'red' : 'warn'))
-    : _mktSourceEmpty('SellerSprite');
+  var ssHtml = ssRequiresAsin
+    ? _mktNeedAsin('竞品对标（SellerSprite）')
+    : (_mktSourceActive(data, 'sellersprite')
+        ? _metric('竞品样本池', _fmtNum(ssPool != null ? ssPool : _mktList(_mg(data, 'sellersprite', 'competitor_lookup')).length) + ' 个') +
+          _metric('高评论密度(>1000)', _fmtNum(ssHighReviewCount != null ? ssHighReviewCount : 0) + ' 条', ssHighReviewCount <= 5 ? 'green' : (ssHighReviewCount > 10 ? 'red' : 'warn'))
+        : _mktSourceEmpty('SellerSprite'));
 
   var thresholdHtml =
     '<div class="mkt-filter-table" style="margin-top:8px"><table>' +
@@ -565,6 +580,10 @@ function renderMarketCompete(data) {
 
   // Competitor list table (from SellerSprite competitor_lookup)
   var clTab = _mktVm(data, 'competitor_list_tab') || {};
+  if (clTab._requires_asin) {
+    html += '<div class="mkt-section-title" style="margin-top:12px">📋 竞品列表</div>';
+    html += _mktNeedAsin('竞品列表（SellerSprite competitor_lookup）');
+  } else {
   var competitors = clTab.sellersprite_competitors || clTab.sif_competitors || [];
   if (competitors.length > 0) {
     var hasVariantGroups = false;
@@ -594,6 +613,7 @@ function renderMarketCompete(data) {
     }
     html += '</table></div>';
   }
+  } // end else (clTab._requires_asin)
 
   document.getElementById('mktTabCompete').innerHTML = html;
 }
@@ -601,6 +621,36 @@ function renderMarketCompete(data) {
 // ── Tab 5: 关键词机会 ──
 function renderMarketKwopp(data) {
   var vm = _mktVm(data, 'kwopp_tab') || _mktNz(data, 'keyword_opportunity') || {};
+  if (vm._requires_asin) {
+    // Keyword mode: SIF keyword_signals not available, but longtail keywords (SS keyword_miner) still work
+    var _ltTab = _mktVm(data, 'longtail_keywords_tab') || {};
+    var _ltItems = _ltTab.keyword_miner_items || [];
+    var _ltHtml2 = '';
+    if (_ltItems.length > 0) {
+      _ltHtml2 = '<div class="mkt-section-title" style="margin-top:10px">🔍 长尾关键词 (SellerSprite keyword_miner) <span class="mkt-src-pill mkt-pill-ss">SS</span></div>';
+      _ltHtml2 += '<div class="mkt-filter-table" style="margin-top:4px"><table>';
+      _ltHtml2 += '<tr><th>关键词</th><th>中文</th><th>搜索量</th><th>CPC</th><th>供需比</th><th>购买率</th><th>均价</th><th>相关度</th></tr>';
+      for (var _li = 0; _li < Math.min(_ltItems.length, 20); _li++) {
+        var _m = _ltItems[_li];
+        _ltHtml2 += '<tr>' +
+          '<td>' + escHtml(_m.keyword || '—') + '</td>' +
+          '<td>' + escHtml(_m.keyword_cn || '—') + '</td>' +
+          '<td>' + _fmtNum(_m.searches) + '</td>' +
+          '<td>' + (_m.bid != null ? '$' + Number(_m.bid).toFixed(2) : '—') + '</td>' +
+          '<td>' + (_m.supply_demand_ratio != null ? Number(_m.supply_demand_ratio).toFixed(1) : '—') + '</td>' +
+          '<td>' + (_m.purchase_rate != null ? (Number(_m.purchase_rate)*100).toFixed(1)+'%' : '—') + '</td>' +
+          '<td>' + (_m.avg_price != null ? '$' + Number(_m.avg_price).toFixed(2) : '—') + '</td>' +
+          '<td>' + (_m.relevancy != null ? Number(_m.relevancy).toFixed(0) + '%' : '—') + '</td>' +
+          '</tr>';
+      }
+      _ltHtml2 += '</table></div>';
+    }
+    document.getElementById('mktTabKwopp').innerHTML =
+      '<div class="mkt-section-title">关键词机会</div>' +
+      _mktNeedAsin('关键词健康分布与机会信号（SIF keyword_signals）') +
+      _ltHtml2;
+    return;
+  }
   var sigs = _mg(data, 'sif', 'keyword_signals') || {};
   var primary = sigs.primary_signals || {};
   var top = vm.top_keywords || sigs.top_keywords || [];
@@ -650,7 +700,7 @@ function renderMarketKwopp(data) {
   var topHtml = top.slice(0,12).map(function(k){
     var h = k.keyword_health || k.health || 'standard';
     var sb = k.signal_bucket || '';
-    var sbColors = {defend:'#22c55e', attack:'#f59e0b', monitor:'#ef4444', ignore:'#6b7280', explore:'#3b82f6'};
+    var sbColors = {defend:'#22c55e', attack:'#f59e0b', monitor:'#ef4444', ignore:'var(--muted)', explore:'#3b82f6'};
     var sbColor = sbColors[sb] || '';
     var cls = h === 'core' ? 'core' : (h === 'at_risk' ? 'at_risk' : (h === 'volatile' ? 'volatile' : (h === 'paid_dependent' ? 'paid_dependent' : '')));
     var sbLabel = {defend:'🛡防守', attack:'⚔进攻', monitor:'👁监控', ignore:'🚫忽略', explore:'🔍蓝海'}[sb] || '';
@@ -867,7 +917,7 @@ function renderMarketPriceBand(data) {
   // Sorftime column
   var stHtml = '';
   if (_mktSourceActive(data, 'sorftime')) {
-    var stPool = _mg(data, 'sorftime', 'product_search') || [];
+    var stPool = _mktList(_mg(data, 'sorftime', 'product_search'));
     if (stPool.length > 0) {
       var priceBands = {};
       stPool.forEach(function(p) {
@@ -926,32 +976,41 @@ function renderMarketReview(data) {
   var html = '<div class="mkt-section-title">评论洞察</div>';
   var ctx = _mktNz(data, 'context_product') || {};
   var sellersprite = (_mktNz(data, 'market_overview') || {}).sellersprite || {};
+  var rvTab = _mktVm(data, 'review_tab_full') || {};
+  var isKwMode = rvTab._requires_asin;
 
-  // SIF - keyword signals (rating/review data from top keywords)
+  // SIF - keyword signals (rating/review data from top keywords) — requires ASIN
   var sifHtml = '';
-  if (_mktSourceActive(data, 'sif')) {
+  if (_mktSourceActive(data, 'sif') && !isKwMode) {
     sifHtml = _metric('评分', ctx.rating != null ? ctx.rating : '—') +
       _metric('评论数', ctx.review_count != null ? _fmtNum(ctx.review_count) : '—') +
       _metric('LQS 质量分', ctx.lqs != null ? ctx.lqs : '—');
-    var kwSignals = _mg(data, 'sif', 'keyword_signals') || {};
-    var topKw = (kwSignals.top_keywords || [])[0] || {};
+    var topKws = (_mktVm(data, 'kwopp_tab') || {}).top_keywords || [];
+    var topKw = topKws[0] || {};
+    if (!topKw.keyword) {
+      var kwSignals = _mg(data, 'sif', 'keyword_signals') || {};
+      topKw = (kwSignals.top_keywords || [])[0] || {};
+    }
     sifHtml += _metric('Top1 词点击集中度', _fmtPct(topKw.top3_click_share)) +
       _metric('Top1 词转化集中度', _fmtPct(topKw.top3_conversion_share));
+  } else if (_mktSourceActive(data, 'sif')) {
+    sifHtml = _mktNeedAsin('商品质量数据（SIF sales_list + keyword_signals）');
   } else { sifHtml = _mktSourceEmpty('SIF'); }
 
   // SellerSprite - keyword research avg rating/reviews
   var ssHtml = '';
   if (_mktSourceActive(data, 'sellersprite')) {
-    ssHtml = _metric('类目均分', sellersprite.avg_rating != null ? sellersprite.avg_rating : '—') +
-      _metric('类目均评数', sellersprite.avg_ratings != null ? _fmtNum(sellersprite.avg_ratings) : '—') +
+    var rvTab2 = _mktVm(data, 'review_tab') || {};
+    ssHtml = _metric('类目均分', sellersprite.avg_rating != null ? sellersprite.avg_rating : (rvTab2.sellersprite_avg_rating != null ? rvTab2.sellersprite_avg_rating : '—')) +
+      _metric('类目均评数', rvTab2.sellersprite_avg_ratings != null ? _fmtNum(rvTab2.sellersprite_avg_ratings) : (sellersprite.avg_ratings != null ? _fmtNum(sellersprite.avg_ratings) : '—')) +
       _metric('关键词CN', sellersprite.keyword_cn || '—');
-    if (!sellersprite.avg_rating && !sellersprite.avg_ratings) ssHtml = '<div class="mkt-empty-card">无关键词研究数据</div>';
+    if (!sellersprite.avg_rating && !rvTab2.sellersprite_avg_rating && !rvTab2.sellersprite_avg_ratings && !sellersprite.avg_ratings) ssHtml = '<div class="mkt-empty-card">无关键词研究数据</div>';
   } else { ssHtml = _mktSourceEmpty('SellerSprite'); }
 
   // Sorftime - product pool avg rating/reviews
   var stHtml = '';
   if (_mktSourceActive(data, 'sorftime')) {
-    var stPool = _mg(data, 'sorftime', 'product_search') || [];
+    var stPool = _mktList(_mg(data, 'sorftime', 'product_search'));
     if (stPool.length > 0) {
       var totalRating = 0, totalReviews = 0, count = 0;
       stPool.forEach(function(p) {
@@ -983,7 +1042,11 @@ function renderMarketReview(data) {
     '</div>';
 
   // ── Real review data from review_tab_full ──
-  var rvTab = _mktVm(data, 'review_tab_full') || {};
+  if (isKwMode) {
+    html += _mktNeedAsin('真实评论数据（SellerSprite review）');
+    document.getElementById('mktTabReview').innerHTML = html;
+    return;
+  }
   var reviewItems = rvTab.review_items || [];
   var starDist = rvTab.star_distribution || {};
   if (reviewItems.length > 0) {

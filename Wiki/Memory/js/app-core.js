@@ -13,6 +13,7 @@ async function loadLicenseStatus() {
       btn.textContent = '更换授权';
       updateTabVisibility(data.allowed_tabs || []);
       checkFirstRunSetup();
+      setTimeout(showAnnouncement, 600);
     } else if (data.status === 'trial') {
       badge.textContent = data.message;
       badge.style.background = 'rgba(245,158,11,.15)';
@@ -21,6 +22,7 @@ async function loadLicenseStatus() {
       btn.textContent = '激活';
       updateTabVisibility(data.allowed_tabs || []);
       checkFirstRunSetup();
+      setTimeout(showAnnouncement, 600);
     } else if (data.status === 'expired') {
       badge.textContent = data.message;
       badge.style.background = 'rgba(239,68,68,.15)';
@@ -47,7 +49,7 @@ async function loadLicenseStatus() {
   } catch(e) {}
 }
 // ── Version Check ──
-var CURRENT_VERSION = 'v3.1';
+var CURRENT_VERSION = 'v3.3';
 var GITHUB_REPO = 'luotwo/BSC-Amazon-OPC-Agent-OS';
 var _otaDownloadUrl = '';
 var _otaAssetSize = 0;
@@ -85,6 +87,20 @@ async function checkUpdate() {
     btn.onclick = function(e){ e.preventDefault(); startOTA(); };
     btn.style.display = 'inline-block';
   } catch(e) { document.getElementById('verUpToDate').style.display = 'inline'; }
+}
+async function checkSifHealth() {
+  try {
+    var res = await fetch('/api/check-sif-health');
+    var data = await res.json();
+    if (data.healthy) return;  // Key is healthy, nothing to show
+    var banner = document.getElementById('sifHealthBanner');
+    var msg = document.getElementById('sifHealthMsg');
+    if (!banner || !msg) return;
+    msg.textContent = (data.message || 'SIF 密钥异常') + (data.action ? ' — ' + data.action : '');
+    banner.style.display = 'flex';
+  } catch(e) {
+    // Network error checking health — silently skip (don't block user)
+  }
 }
 
 async function startOTA() {
@@ -205,6 +221,7 @@ function submitActivation() {
 }
 loadLicenseStatus();
 checkUpdate();
+checkSifHealth();
 tplLoad();
 
 // ── API Test ──
@@ -506,4 +523,22 @@ async function clearMaterialCacheOnly() {
 
     showToast('✓ 素材缓存已清除（上下文:' + (data.cleared.context||0) + ' 缓存:' + (data.cleared.material_cache||0) + ' 图片:' + (data.cleared.files||0) + '）', 'success');
   } catch(e) { showToast('清除失败: '+e.message, 'error'); }
+}
+
+// ── Announcement Modal ──
+function showAnnouncement() {
+  try {
+    var until = localStorage.getItem('announcementDismissedUntil');
+    if (until && Date.now() < parseInt(until)) return;
+  } catch(e) {}
+  var m = document.getElementById('announceModal');
+  if (m) m.classList.add('open');
+}
+function closeAnnouncement() {
+  var cb = document.getElementById('announceDontShow');
+  if (cb && cb.checked) {
+    try { localStorage.setItem('announcementDismissedUntil', String(Date.now() + 2592000000)); } catch(e) {}
+  }
+  var m = document.getElementById('announceModal');
+  if (m) m.classList.remove('open');
 }

@@ -1,11 +1,3 @@
-// ── Ai Sub-tab Switch ──
-function switchAiTab(level) {
-  document.getElementById('aiSubTabs').style.display = 'flex';
-  ['aiPanelL1','aiPanelL2','aiPanelL3'].forEach(function(id,i){ document.getElementById(id).style.display = (i+1===level)?'block':'none'; });
-  ['aiTabBtnL1','aiTabBtnL2','aiTabBtnL3'].forEach(function(bid,i){ var b=document.getElementById(bid); b.classList.toggle('active',i+1===level); });
-  ['aiTabBtnL2','aiTabBtnL3'].forEach(function(bid,i){ document.getElementById(bid).style.display = (i+1 < level || AD_INSPECT_STATE['level'+(i+2)+'_data']) ? 'inline-flex' : 'none'; });
-}
-
 // ── Ad Analysis Tab ──
 function switchAdTab(tab) {
   document.querySelectorAll('#adSubTabs .expert-tab').forEach(function(t){t.classList.remove('active');});
@@ -113,14 +105,10 @@ function renderAdDashboard(data) {
   var stageLabel = stage === 'cold_start' ? '冷启动(0-30天)' : (stage === 'growing' ? '成长期(30-90天)' : (stage === 'mature' ? '成熟期(90天+)' : '—'));
   html += '<div class="mkt-section-title">&#x1F4CA; 仪表盘 <span class="badge" style="margin-left:8px;background:var(--accent);color:#fff">' + escHtml(stageLabel) + '</span></div>';
 
-  // 9 KPI cards with colored accents
+  // KPI cards (ACOS/TACOS/CTR/CVR removed — require Amazon Ads API)
   var metrics = d.metrics || {};
   var m = [
-    {k:'ACOS', v:metrics.acos, fmt:'pct', target:'<15%', good:15, warn:30},
-    {k:'TACOS', v:metrics.tacos, fmt:'pct', target:'<5%', good:5, warn:10},
     {k:'自然占比', v:metrics.natural_ratio, fmt:'pct', target:'70%+', good:70, warn:40},
-    {k:'广告CVR', v:metrics.ad_cvr, fmt:'pct', target:'>15%', good:15, warn:8},
-    {k:'CTR', v:metrics.ctr, fmt:'pct', target:'>0.6%', good:0.6, warn:0.3},
     {k:'核心词自然位', v:metrics.core_rank, fmt:'raw', target:'首页'},
     {k:'BSR', v:metrics.bsr, fmt:'raw', target:'Top20'},
     {k:'评论数', v:metrics.reviews, fmt:'num', target:'100+'},
@@ -142,22 +130,12 @@ function renderAdDashboard(data) {
     var bc = borderColors[statusCls] || 'var(--text)';
     var bg = bgColors[statusCls] || 'var(--bg2)';
     html += '<div class="mkt-card" style="padding:8px 10px;border-left:3px solid ' + bc + ';background:' + bg + ';margin:0">' +
-      '<div style="font-size:.62rem;color:#94a3b8;font-weight:600;letter-spacing:.5px;margin-bottom:2px">' + escHtml(item.k) + '</div>' +
+      '<div style="font-size:.62rem;color:var(--muted);font-weight:600;letter-spacing:.5px;margin-bottom:2px">' + escHtml(item.k) + '</div>' +
       '<div style="font-size:1.15rem;font-weight:700;color:' + bc + '">' + escHtml(String(display)) + '</div>' +
-      '<div style="font-size:.55rem;color:#94a3b8;margin-top:2px">目标: ' + escHtml(item.target) + '</div>' +
+      '<div style="font-size:.55rem;color:var(--muted);margin-top:2px">目标: ' + escHtml(item.target) + '</div>' +
       '</div>';
   });
   html += '</div>';
-
-  // ACOS/TACOS matrix + Diagnostic
-  var matrix = d.acos_tacos_matrix || '';
-  var diag = d.diagnostic_chain || '';
-  if (matrix || diag) {
-    html += '<div class="mkt-col-grid" style="grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">';
-    if (matrix) html += '<div class="mkt-card" style="margin:0"><div class="mkt-card-head" style="font-size:.72rem">&#x1F4CA; ACOS/TACOS 矩阵</div><div style="font-size:.7rem;padding:4px 0">' + escHtml(matrix) + '</div></div>';
-    if (diag) html += '<div class="mkt-card" style="margin:0"><div class="mkt-card-head" style="font-size:.72rem">&#x1F50D; 五步诊断</div><div style="font-size:.7rem;padding:4px 0">' + escHtml(diag) + '</div></div>';
-    html += '</div>';
-  }
 
   // Channel breakdown
   var ch = d.channel_breakdown || {};

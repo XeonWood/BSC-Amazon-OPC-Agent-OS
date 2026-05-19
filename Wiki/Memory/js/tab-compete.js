@@ -36,7 +36,7 @@ function startCompAnalysis() {
     var btn = document.querySelector('#mainTabCompete .btn-mkt-start');
     if (btn) { btn.disabled = true; btn.textContent = '⏳ 分析中...'; }
     var TABS = ['Overview','Position','OrderProb','Keyword','Adlift','Strategy'];
-    TABS.forEach(function(t){ var el = document.getElementById('compTab' + t); if (el) el.innerHTML = '<div style="text-align:center;padding:40px;color:#9ca3af"><p style="font-size:1rem;margin-bottom:8px">正在采集竞争数据...</p><p style="font-size:0.75rem">SIF MCP + Amazon 页面抓取 · 约 20-40 秒</p></div>'; });
+    TABS.forEach(function(t){ var el = document.getElementById('compTab' + t); if (el) el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)"><p style="font-size:1rem;margin-bottom:8px">正在采集竞争数据...</p><p style="font-size:0.75rem">SIF MCP + Amazon 页面抓取 · 约 20-40 秒</p></div>'; });
     fetch(url).then(function(r){return r.json();}).then(function(data){
         COMP_STATE.data = data;
         if (btn) { btn.disabled = false; btn.textContent = '🔍 开始分析'; }
@@ -83,14 +83,14 @@ function _card(title, src, body, borderColor) {
         '<div class="mkt-card-head"><span>' + title + '</span><small>' + (src || '') + '</small></div>' + body + '</div>';
 }
 function _kpi(label, value, color) {
-    return '<div style="border-left:3px solid ' + (color || '#e5e7eb') + ';padding:5px 10px;background:rgba(255,255,255,0.02);border-radius:0 5px 5px 0;min-width:80px">' +
-        '<div style="font-size:0.65rem;color:#9ca3af">' + label + '</div><div style="font-size:1.05rem;font-weight:700;color:' + (color||'#e5e7eb') + ';line-height:1.2">' + value + '</div></div>';
+    return '<div style="border-left:3px solid ' + (color || 'var(--text-soft)') + ';padding:5px 10px;background:var(--overlay-subtle);border-radius:0 5px 5px 0;min-width:80px">' +
+        '<div style="font-size:0.65rem;color:var(--muted)">' + label + '</div><div style="font-size:1.05rem;font-weight:700;color:' + (color||'var(--text-soft)') + ';line-height:1.2">' + value + '</div></div>';
 }
 function _kpiRow(items) {
     return '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">' + items.join('') + '</div>';
 }
 function _pill(text, on, color) {
-    return '<span style="background:' + (on ? color : '#374151') + ';color:' + (on ? '#fff' : '#6b7280') + ';padding:2px 10px;border-radius:11px;font-size:0.65rem;font-weight:600">' + text + '</span>';
+    return '<span style="background:' + (on ? color : 'var(--fill-off)') + ';color:' + (on ? '#fff' : 'var(--muted)') + ';padding:2px 10px;border-radius:11px;font-size:0.65rem;font-weight:600">' + text + '</span>';
 }
 
 // ── SVG donut pie chart ──────────────────────────────────────
@@ -107,16 +107,16 @@ function _donut(slices, opts) {
         var x3 = cx + rInner * Math.cos(angle + sa), y3 = cy + rInner * Math.sin(angle + sa);
         var x4 = cx + rInner * Math.cos(angle), y4 = cy + rInner * Math.sin(angle);
         var large = sa > Math.PI ? 1 : 0;
-        h += '<path d="M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' A' + rOuter + ' ' + rOuter + ' 0 ' + large + ' 1 ' + x2.toFixed(1) + ' ' + y2.toFixed(1) + ' L' + x3.toFixed(1) + ' ' + y3.toFixed(1) + ' A' + rInner + ' ' + rInner + ' 0 ' + large + ' 0 ' + x4.toFixed(1) + ' ' + y4.toFixed(1) + ' Z" fill="' + (slices[i].color||'#6b7280') + '" opacity="0.85"><title>' + escHtml(slices[i].label||'') + ': ' + _fmtPct(slices[i].value/total) + '</title></path>';
+        h += '<path d="M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' A' + rOuter + ' ' + rOuter + ' 0 ' + large + ' 1 ' + x2.toFixed(1) + ' ' + y2.toFixed(1) + ' L' + x3.toFixed(1) + ' ' + y3.toFixed(1) + ' A' + rInner + ' ' + rInner + ' 0 ' + large + ' 0 ' + x4.toFixed(1) + ' ' + y4.toFixed(1) + ' Z" fill="' + (slices[i].color||'var(--muted)') + '" opacity="0.85"><title>' + escHtml(slices[i].label||'') + ': ' + _fmtPct(slices[i].value/total) + '</title></path>';
         angle += sa;
     }
-    h += '<text x="' + cx + '" y="' + (cy-5) + '" text-anchor="middle" fill="#e5e7eb" font-size="15" font-weight="700">' + (opts.center || '') + '</text>';
-    if (opts.sub) h += '<text x="' + cx + '" y="' + (cy+14) + '" text-anchor="middle" fill="#9ca3af" font-size="9">' + opts.sub + '</text>';
+    h += '<text x="' + cx + '" y="' + (cy-5) + '" text-anchor="middle" fill="var(--text-soft)" font-size="15" font-weight="700">' + (opts.center || '') + '</text>';
+    if (opts.sub) h += '<text x="' + cx + '" y="' + (cy+14) + '" text-anchor="middle" fill="var(--muted)" font-size="9">' + opts.sub + '</text>';
     h += '</svg>';
     if (opts.legend !== false) {
         h += '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px">';
         slices.forEach(function(sl){
-            h += '<span style="font-size:0.65rem;color:#9ca3af;display:flex;align-items:center;gap:3px"><span style="width:7px;height:7px;border-radius:2px;background:' + (sl.color||'#6b7280') + ';display:inline-block"></span>' + escHtml(sl.label||'') + ' ' + _fmtPct(sl.value/total) + '</span>';
+            h += '<span style="font-size:0.65rem;color:var(--muted);display:flex;align-items:center;gap:3px"><span style="width:7px;height:7px;border-radius:2px;background:' + (sl.color||'var(--muted)') + ';display:inline-block"></span>' + escHtml(sl.label||'') + ' ' + _fmtPct(sl.value/total) + '</span>';
         });
         h += '</div>';
     }
@@ -125,8 +125,8 @@ function _donut(slices, opts) {
 
 var _COLORS = ['#3b82f6','#22c55e','#f59e0b','#8b5cf6','#ec4899','#06b6d4','#ef4444','#84cc16','#f97316','#6366f1'];
 function _compHealthColor(h) {
-    var map = {core:'#3b82f6', at_risk:'#ef4444', volatile:'#f59e0b', paid_dependent:'#8b5cf6', standard:'#6b7280'};
-    return map[h] || '#6b7280';
+    var map = {core:'#3b82f6', at_risk:'#ef4444', volatile:'#f59e0b', paid_dependent:'#8b5cf6', standard:'var(--muted)'};
+    return map[h] || 'var(--muted)';
 }
 
 // ════════════════════════════════════════════════════════════
@@ -159,7 +159,7 @@ function renderCompOverview(d) {
     if (gaining.length) sigBody += '<div style="color:#22c55e;font-size:0.75rem;margin:3px 0">📈 ' + gaining.map(function(g){return g.keyword + ' (+' + _fmtPct(g.contri_change) + ')';}).join(' · ') + '</div>';
     if (declining.length) sigBody += '<div style="color:#ef4444;font-size:0.75rem;margin:3px 0">📉 ' + declining.map(function(g){return g.keyword + ' (' + _fmtPct(g.contri_change) + ')';}).join(' · ') + '</div>';
     if (gaps.length) sigBody += '<div style="color:#f59e0b;font-size:0.75rem;margin:3px 0">⚠ ' + gaps.map(function(g){return g.keyword + ' (' + (g.gap_severity||'') + ')';}).join(' · ') + '</div>';
-    if (!sigBody) sigBody = '<div style="font-size:0.75rem;color:#6b7280">暂无显著信号变化</div>';
+    if (!sigBody) sigBody = '<div style="font-size:0.75rem;color:var(--muted)">暂无显著信号变化</div>';
     h += _card('核心信号', 'SIF', sigBody, '#22c55e');
 
     // Market structure card
@@ -169,7 +169,7 @@ function renderCompOverview(d) {
     h += _card('市场格局', 'SIF', msBody, '#3b82f6');
 
     // Product info (compact)
-    var infoBody = '<div style="font-size:0.78rem;color:#d1d5db;line-height:1.5">' + escHtml((mp.title || '').substring(0, 150)) + '</div>';
+    var infoBody = '<div style="font-size:0.78rem;color:var(--text-soft);line-height:1.5">' + escHtml((mp.title || '').substring(0, 150)) + '</div>';
     h += _card('产品标题', 'Amazon', infoBody, '#8b5cf6');
 
     // Top competitors
@@ -224,14 +224,14 @@ function renderCompPosition(d) {
                 var v = sys[k]; if (!v) return;
                 var clr = v.level === '高' ? '#22c55e' : (v.level === '中' ? '#f59e0b' : '#ef4444');
                 sysB += '<div style="margin:5px 0;font-size:0.78rem"><strong>' + k + ':</strong> <span style="color:' + clr + ';font-weight:700">' + v.level + '</span></div>';
-                if (v.evidence) sysB += '<div style="font-size:0.68rem;color:#9ca3af;margin-left:6px">' + escHtml(v.evidence.substring(0,100)) + '</div>';
+                if (v.evidence) sysB += '<div style="font-size:0.68rem;color:var(--muted);margin-left:6px">' + escHtml(v.evidence.substring(0,100)) + '</div>';
             });
             if (sys.type) sysB += '<div style="margin-top:4px;font-size:0.75rem">类型: <strong>' + escHtml(sys.type) + '</strong></div>';
             row += '<div style="flex:1;min-width:260px">' + _card('市场进入评估', 'SIF', sysB, '#8b5cf6') + '</div>';
         }
         if (Object.keys(sp).length) {
             var spB = '<div style="font-size:0.9rem"><strong>判定:</strong> <span style="font-size:1.15rem;color:' + (sp.verdict==='go'?'#22c55e':(sp.verdict==='caution'?'#f59e0b':'#ef4444')) + ';font-weight:700">' + (sp.verdict||'--').toUpperCase() + '</span></div>';
-            if (sp.primary_angle) spB += '<div style="font-size:0.75rem;margin-top:6px;color:#d1d5db">' + escHtml(sp.primary_angle) + '</div>';
+            if (sp.primary_angle) spB += '<div style="font-size:0.75rem;margin-top:6px;color:var(--text-soft)">' + escHtml(sp.primary_angle) + '</div>';
             row += '<div style="flex:1;min-width:260px">' + _card('策略路径', 'SIF', spB, '#22c55e') + '</div>';
         }
         row += '</div>';
@@ -263,12 +263,12 @@ function renderCompOrderProb(d) {
     var top8 = scores.slice(0, 8), othersP = 0;
     scores.slice(8).forEach(function(s){ othersP += s.order_prob; });
     top8.forEach(function(s,i){ donutSlices.push({label: (s.asin||'').substring(0,10), value: s.order_prob, color: _COLORS[i]}); });
-    if (othersP > 0.5) donutSlices.push({label: '其他', value: othersP, color: '#374151'});
+    if (othersP > 0.5) donutSlices.push({label: '其他', value: othersP, color: 'var(--fill-off)'});
 
     // Donut card body
     var donutBody = '<div style="display:flex;flex-direction:column;align-items:center;padding:4px 0">' +
         _donut(donutSlices, {size:170, center:'100%', sub: scores.length + '个竞品'}) +
-        '<div style="font-size:0.62rem;color:#6b7280;margin-top:4px">S<sub>i</sub>=0.35M+0.35T+0.15P+0.15C &nbsp; P<sub>i</sub>=(S<sub>i</sub>/ΣS)×C</div></div>';
+        '<div style="font-size:0.62rem;color:var(--muted);margin-top:4px">S<sub>i</sub>=0.35M+0.35T+0.15P+0.15C &nbsp; P<sub>i</sub>=(S<sub>i</sub>/ΣS)×C</div></div>';
 
     // Charts column: donut card ABOVE curve card, stacked vertically
     var chartsCol = '<div style="flex:0 0 auto;min-width:230px">' +
@@ -396,9 +396,9 @@ function renderCompStrategy(d) {
     var vb = sp.verdict === 'go' ? 'rgba(34,197,94,0.08)' : (sp.verdict === 'caution' ? 'rgba(245,158,11,0.08)' : 'rgba(239,68,68,0.08)');
     h += '<div style="background:' + vb + ';border-left:4px solid ' + vc + ';padding:12px 16px;border-radius:0 8px 8px 0;margin-bottom:10px">';
     h += '<span style="font-size:1.3rem;font-weight:700;color:' + vc + '">' + (sp.verdict||'?').toUpperCase() + '</span>';
-    h += '<span style="font-size:0.85rem;color:#d1d5db;margin-left:12px">竞争位置: <strong>' + escHtml(st.competition_position||'--') + '</strong></span></div>';
+    h += '<span style="font-size:0.85rem;color:var(--text-soft);margin-left:12px">竞争位置: <strong>' + escHtml(st.competition_position||'--') + '</strong></span></div>';
     if (sp.primary_angle) h += '<div style="font-size:0.78rem;color:#fbbf24;margin-bottom:10px;margin-left:4px">主攻方向: ' + escHtml(sp.primary_angle) + '</div>';
-    if (ds.action_hint) h += '<div style="font-size:0.75rem;color:#9ca3af;margin-bottom:10px;margin-left:4px">' + escHtml(ds.action_hint) + '</div>';
+    if (ds.action_hint) h += '<div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px;margin-left:4px">' + escHtml(ds.action_hint) + '</div>';
 
     // Three assessment columns
     if (Object.keys(sys).length) {
@@ -408,8 +408,8 @@ function renderCompStrategy(d) {
             var clr = v.level === '高' ? '#22c55e' : (v.level === '中' ? '#f59e0b' : '#ef4444');
             var bg = v.level === '高' ? 'rgba(34,197,94,0.06)' : (v.level === '中' ? 'rgba(245,158,11,0.06)' : 'rgba(239,68,68,0.06)');
             h += '<div style="flex:1;min-width:170px;background:' + bg + ';border-left:3px solid ' + clr + ';padding:10px 12px;border-radius:0 6px 6px 0">' +
-                '<div style="font-size:0.68rem;color:#9ca3af">' + k + '</div><div style="font-size:1.2rem;font-weight:700;color:' + clr + '">' + v.level + '</div>' +
-                '<div style="font-size:0.65rem;color:#9ca3af;margin-top:4px;line-height:1.4">' + escHtml((v.evidence||'').substring(0,100)) + '</div></div>';
+                '<div style="font-size:0.68rem;color:var(--muted)">' + k + '</div><div style="font-size:1.2rem;font-weight:700;color:' + clr + '">' + v.level + '</div>' +
+                '<div style="font-size:0.65rem;color:var(--muted);margin-top:4px;line-height:1.4">' + escHtml((v.evidence||'').substring(0,100)) + '</div></div>';
         });
         h += '</div>';
     }
@@ -418,7 +418,7 @@ function renderCompStrategy(d) {
     if (comps.length) {
         var mt = '<table class="mkt-filter-table"><thead><tr><th>#</th><th>ASIN</th><th>模式</th><th>月销</th><th>$</th><th>评分</th><th>威胁</th></tr></thead><tbody>';
         comps.forEach(function(c){
-            var th = c.total_share > 0.1 ? '<span style="color:#ef4444;font-weight:700">🔴 高</span>' : (c.total_share > 0.03 ? '<span style="color:#f59e0b;font-weight:700">🟠 中</span>' : '<span style="color:#6b7280">🟡 低</span>');
+            var th = c.total_share > 0.1 ? '<span style="color:#ef4444;font-weight:700">🔴 高</span>' : (c.total_share > 0.03 ? '<span style="color:#f59e0b;font-weight:700">🟠 中</span>' : '<span style="color:var(--muted)">🟡 低</span>');
             mt += '<tr><td>' + (c.rank||'--') + '</td><td>' + escHtml(c.asin||'') + '</td><td>' + escHtml(c.competition_mode||'--') + '</td><td>' + escHtml(c.monthly_orders||'--') + '</td><td>$' + (c.price||'--') + '</td><td>' + (c.rating||'--') + '</td><td>' + th + '</td></tr>';
         });
         mt += '</tbody></table>';

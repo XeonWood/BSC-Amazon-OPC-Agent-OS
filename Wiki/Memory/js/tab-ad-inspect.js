@@ -9,42 +9,56 @@ var AI = { data: null, asin: '', country: '', l2d: null, l2name: '', l2cid: '', 
 // _aiBar now uses SVG curve from app-utils.js
 
 async function startAdInspect() {
-  var a = document.getElementById('adAsin').value.trim();
-  var c = document.getElementById('adCountry').value;
-  if (!c) { showToast('请选择站点'); return; }
-  if (!a) { showToast('请输入 ASIN'); return; }
-  if (!/^[A-Za-z0-9]{5,15}$/.test(a)) { showToast('ASIN 格式错误'); return; }
-  try { await getAdSettings(); } catch(e) {}
-  showToast('正在查询广告架构下钻数据，预计 10-30 秒，请耐心等待…', 'info');
-  var btn = document.querySelector('#mainTabAdAnalysis .btn-mkt-start[onclick*="startAdInspect"]');
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ 查询中...'; }
-  // Show inspect panel without calling switchAdTab (avoid recursion)
-  document.querySelectorAll('#adSubTabs .expert-tab').forEach(function(t){t.classList.remove('active');});
-  ['adTabDashboard','adTabCampaign','adTabKeyword','adTabSearchterm','adTabBidbudget','adTabPlacement','adTabCompete','adTabInspect'].forEach(function(id){
-    document.getElementById(id).style.display = 'none';
-  });
-  // Find the "查广告" sub-tab button by text and activate it
-  document.querySelectorAll('#adSubTabs .expert-tab').forEach(function(btn){
-    if (btn.textContent.indexOf('查广告') >= 0) btn.classList.add('active');
-  });
-  document.getElementById('adTabInspect').style.display = 'block';
-  var pe = document.getElementById('aiPanelEmpty'); if (pe) pe.style.display = 'none';
-  var pl = document.getElementById('aiPanelL1'); if (pl) pl.innerHTML = '<div class="mkt-loading"><div><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><div style="margin-top:10px">正在采集 ASIN 级数据...</div></div>';
-  document.getElementById('aiSubTabs').style.display = 'flex';
-  switchAiTab(1);
-  document.getElementById('aiTabBtnL2').style.display = 'none';
-  document.getElementById('aiTabBtnL3').style.display = 'none';
-  var jid = 'ai' + Date.now().toString(36) + Math.random().toString(36).substr(2,6);
   try {
-    var r = await fetch('/api/ad-inspect/' + jid + '?asin=' + encodeURIComponent(a) + '&country=' + encodeURIComponent(c));
-    var d = await r.json();
-    if (btn) { btn.disabled = false; btn.textContent = '🔍 查广告'; }
-    if (d.error) { showToast('分析失败：' + d.error); return; }
-    AI = { data: d, asin: a, country: c, l2d: null, l2name: '', l2cid: '', l3agid: '' };
-    renderL1();
+    var adAsinEl = document.getElementById('adAsin');
+    var adCountryEl = document.getElementById('adCountry');
+    if (!adAsinEl || !adCountryEl) { showToast('页面元素缺失，请刷新页面'); return; }
+    var a = adAsinEl.value.trim();
+    var c = adCountryEl.value;
+    if (!c) { showToast('请选择站点'); return; }
+    if (!a) { showToast('请输入 ASIN'); return; }
+    if (!/^[A-Za-z0-9]{5,15}$/.test(a)) { showToast('ASIN 格式错误'); return; }
+    if (typeof getAdSettings === 'function') {
+      try { await getAdSettings(); } catch(e) { showToast('设置加载失败: ' + e.message); }
+    }
+    showToast('正在查询广告架构下钻数据，预计 10-30 秒，请耐心等待…', 'info');
+    var btn = document.querySelector('#mainTabAdAnalysis .btn-mkt-start[onclick*="startAdInspect"]');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ 查询中...'; }
+    // Show inspect panel
+    var adSubTabs = document.getElementById('adSubTabs');
+    if (adSubTabs) {
+      adSubTabs.querySelectorAll('.expert-tab').forEach(function(t){t.classList.remove('active');});
+    }
+    var panelIds = ['adTabDashboard','adTabCampaign','adTabKeyword','adTabSearchterm','adTabBidbudget','adTabPlacement','adTabCompete','adTabInspect'];
+    panelIds.forEach(function(id){ var el=document.getElementById(id); if(el)el.style.display='none'; });
+    if (adSubTabs) {
+      adSubTabs.querySelectorAll('.expert-tab').forEach(function(t){
+        if (t.textContent.indexOf('查广告') >= 0) t.classList.add('active');
+      });
+    }
+    var inspectPanel = document.getElementById('adTabInspect');
+    if (inspectPanel) inspectPanel.style.display = 'block';
+    var pe = document.getElementById('aiPanelEmpty'); if (pe) pe.style.display = 'none';
+    var pl = document.getElementById('aiPanelL1'); if (pl) pl.innerHTML = '<div class="mkt-loading"><div><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><div style="margin-top:10px">正在采集 ASIN 级数据...</div></div>';
+    var aiSubTabs = document.getElementById('aiSubTabs');
+    if (aiSubTabs) aiSubTabs.style.display = 'flex';
+    switchAiTab(1);
+    var l2btn = document.getElementById('aiTabBtnL2'); if (l2btn) l2btn.style.display = 'none';
+    var l3btn = document.getElementById('aiTabBtnL3'); if (l3btn) l3btn.style.display = 'none';
+    var jid = 'ai' + Date.now().toString(36) + Math.random().toString(36).substr(2,6);
+    try {
+      var r = await fetch('/api/ad-inspect/' + jid + '?asin=' + encodeURIComponent(a) + '&country=' + encodeURIComponent(c));
+      var d = await r.json();
+      if (btn) { btn.disabled = false; btn.textContent = '🔍 查广告'; }
+      if (d.error) { showToast('分析失败：' + d.error); return; }
+      AI = { data: d, asin: a, country: c, l2d: null, l2name: '', l2cid: '', l3agid: '' };
+      renderL1();
+    } catch(err) {
+      if (btn) { btn.disabled = false; btn.textContent = '🔍 查广告'; }
+      showToast('请求失败：' + err.message);
+    }
   } catch(err) {
-    if (btn) { btn.disabled = false; btn.textContent = '🔍 查广告'; }
-    showToast('请求失败：' + err.message);
+    showToast('查广告出错：' + err.message);
   }
 }
 
@@ -151,7 +165,8 @@ function renderL1() {
     h += '</table></div>';
   }
 
-  document.getElementById('aiPanelL1').innerHTML = h;
+  var panel = document.getElementById('aiPanelL1');
+  if (panel) panel.innerHTML = h;
 }
 
 // Event delegation for L1→L2
@@ -242,7 +257,8 @@ function renderL2() {
     h += '</table></div>';
   }
 
-  document.getElementById('aiPanelL2').innerHTML = h;
+  var panel2 = document.getElementById('aiPanelL2');
+  if (panel2) panel2.innerHTML = h;
 }
 
 // ═══ L3 ═══
@@ -295,5 +311,6 @@ function renderL3(data) {
     h += '<div class="mkt-empty-card">暂无关键词拆解数据</div>';
   }
 
-  document.getElementById('aiPanelL3').innerHTML = h;
+  var panel3 = document.getElementById('aiPanelL3');
+  if (panel3) panel3.innerHTML = h;
 }

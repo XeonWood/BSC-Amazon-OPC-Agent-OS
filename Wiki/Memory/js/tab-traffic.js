@@ -40,7 +40,7 @@ async function startTrafficAnomaly() {
     showToast('正在诊断流量异常，预计 10-60 秒，请耐心等待…', 'info');
     var btn = document.querySelector('#mainTabTrafficAnomaly .btn-mkt-start');
     if (btn) { btn.disabled = true; btn.textContent = '⏳ 诊断中...'; }
-    document.getElementById('taResults').innerHTML = '<div style="text-align:center;padding:40px;color:#9ca3af">正在诊断 ' + escHtml(asin) + ' 流量变化...<br><small>约 10-60 秒</small></div>';
+    document.getElementById('taResults').innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">正在诊断 ' + escHtml(asin) + ' 流量变化...<br><small>约 10-60 秒</small></div>';
     document.querySelectorAll('#taSubTabs .expert-tab').forEach(function(b){ b.classList.remove('active'); });
     document.querySelector('#taSubTabs .expert-tab').classList.add('active');
 
@@ -72,7 +72,7 @@ function taRender() {
 }
 
 function _kpi(l, v, c) {
-    return '<div style="border-left:3px solid '+(c||'#e5e7eb')+';padding:5px 10px;background:rgba(255,255,255,0.02);border-radius:0 5px 5px 0;min-width:70px"><div style="font-size:0.65rem;color:#9ca3af">'+l+'</div><div style="font-size:1.05rem;font-weight:700;color:'+(c||'#e5e7eb')+'">'+v+'</div></div>';
+    return '<div style="border-left:3px solid '+(c||'var(--text-soft)')+';padding:5px 10px;background:var(--overlay-subtle);border-radius:0 5px 5px 0;min-width:70px"><div style="font-size:0.65rem;color:var(--muted)">'+l+'</div><div style="font-size:1.05rem;font-weight:700;color:'+(c||'var(--text-soft)')+'">'+v+'</div></div>';
 }
 
 // ═══ Overview ═══
@@ -90,7 +90,7 @@ function taRenderOverview() {
         if (d.depth_reached) meta.push('深度 L'+d.depth_reached);
         if (d.confidence) meta.push(escHtml(d.confidence));
         if (d._fallback) meta.push('本地兜底');
-        if (meta.length) h += '<div style="font-size:0.72rem;color:#9ca3af;margin-top:2px">'+meta.join(' | ')+'</div>';
+        if (meta.length) h += '<div style="font-size:0.72rem;color:var(--muted);margin-top:2px">'+meta.join(' | ')+'</div>';
         h += '</div>';
     }
 
@@ -112,16 +112,16 @@ function taRenderOverview() {
     h += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">';
     layers.forEach(function(l){
         var xr = isExc(l.id), cnt = (grp[l.id]||[]).length;
-        var c2 = xr ? '#6b7280' : (cnt ? '#22c55e' : '#f59e0b');
+        var c2 = xr ? 'var(--muted)' : (cnt ? '#22c55e' : '#f59e0b');
         h += '<div style="flex:1;min-width:90px;background:'+(xr?'rgba(107,114,128,0.06)':(cnt?'rgba(34,197,94,0.06)':'rgba(245,158,11,0.06)'))+';border-left:3px solid '+c2+';padding:8px 10px;border-radius:0 6px 6px 0;cursor:pointer" onclick="switchTATab(\''+l.id+'\')">';
-        h += '<div style="font-size:0.68rem;color:#9ca3af">'+l.i+' '+l.l+'</div><div style="font-size:0.85rem;font-weight:700;color:'+c2+'">'+(xr?'未覆盖':cnt+'条证据')+'</div></div>';
+        h += '<div style="font-size:0.68rem;color:var(--muted)">'+l.i+' '+l.l+'</div><div style="font-size:0.85rem;font-weight:700;color:'+c2+'">'+(xr?'未覆盖':cnt+'条证据')+'</div></div>';
     });
     h += '</div>';
 
     // Action
     if (d.action) {
         h += '<div style="background:rgba(59,130,246,0.06);border-left:3px solid #3b82f6;padding:10px 14px;margin-bottom:10px;border-radius:0 6px 6px 0">';
-        h += '<div style="font-weight:700;color:#3b82f6;margin-bottom:2px;font-size:0.8rem">建议行动</div><div style="font-size:0.85rem;color:#d1d5db">'+escHtml(d.action)+'</div></div>';
+        h += '<div style="font-weight:700;color:#3b82f6;margin-bottom:2px;font-size:0.8rem">建议行动</div><div style="font-size:0.85rem;color:var(--text-soft)">'+escHtml(d.action)+'</div></div>';
     }
 
     // Mermaid
@@ -132,12 +132,12 @@ function taRenderOverview() {
     // Narrative
     if (d.narrative) {
         h += '<div class="mkt-card" style="border-left:3px solid #8b5cf6;margin-bottom:10px"><div class="mkt-card-head"><span>证据链</span></div>';
-        h += '<div style="color:#d1d5db;line-height:1.7;font-size:0.82rem;white-space:pre-wrap">'+escHtml(d.narrative)+'</div></div>';
+        h += '<div style="color:var(--text-soft);line-height:1.7;font-size:0.82rem;white-space:pre-wrap">'+escHtml(d.narrative)+'</div></div>';
     }
     // Errors
     if (Object.keys(errs).length) {
-        var eh = ''; for(var k in errs) eh += '<div style="font-size:0.72rem;color:#9ca3af">'+escHtml(k)+': '+escHtml(errs[k])+'</div>';
-        h += '<div class="mkt-card" style="border-left:3px solid #6b7280;margin-bottom:10px"><div class="mkt-card-head"><span>数据源备注</span></div>'+eh+'</div>';
+        var eh = ''; for(var k in errs) eh += '<div style="font-size:0.72rem;color:var(--muted)">'+escHtml(k)+': '+escHtml(errs[k])+'</div>';
+        h += '<div class="mkt-card" style="border-left:3px solid var(--muted);margin-bottom:10px"><div class="mkt-card-head"><span>数据源备注</span></div>'+eh+'</div>';
     }
     document.getElementById('taResults').innerHTML = h;
 }
@@ -152,7 +152,7 @@ function taRenderLayer(name) {
     var h = '';
 
     // Header
-    h += '<div style="margin-bottom:12px"><strong style="font-size:0.95rem;color:#d1d5db">'+(labels[name]||name)+'</strong>';
+    h += '<div style="margin-bottom:12px"><strong style="font-size:0.95rem;color:var(--text-soft)">'+(labels[name]||name)+'</strong>';
     if (exclR) h += ' <span style="color:#ef4444;font-size:0.75rem">— 未覆盖</span>';
     else if (!ly.length) h += ' <span style="color:#f59e0b;font-size:0.75rem">— 暂无该层证据</span>';
     else h += ' <span style="color:#22c55e;font-size:0.75rem">— '+ly.length+' 条证据</span>';
@@ -179,11 +179,11 @@ function taRenderLayer(name) {
     // Evidence
     if (ly.length) {
         ly.forEach(function(e){
-            var w = e.weight||'', wc = w==='primary'?'#ef4444':(w==='secondary'?'#f59e0b':'#6b7280');
+            var w = e.weight||'', wc = w==='primary'?'#ef4444':(w==='secondary'?'#f59e0b':'var(--muted)');
             var wl = w==='primary'?'主因':(w==='secondary'?'次因':'参考');
             h += '<div class="mkt-card" style="border-left:3px solid '+wc+';margin-bottom:6px;padding:10px 14px">';
             h += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
-            h += '<span style="font-size:0.82rem;font-weight:600;flex:1;min-width:140px;color:#d1d5db">'+escHtml(e.signal||'')+'</span>';
+            h += '<span style="font-size:0.82rem;font-weight:600;flex:1;min-width:140px;color:var(--text-soft)">'+escHtml(e.signal||'')+'</span>';
             if (e.value) h += '<span style="font-size:0.88rem;font-weight:700;color:'+wc+'">'+escHtml(e.value)+'</span>';
             h += '<span style="font-size:0.6rem;background:'+wc+'20;color:'+wc+';padding:1px 6px;border-radius:8px;white-space:nowrap">'+wl+'</span>';
             h += '</div></div>';
@@ -229,6 +229,6 @@ function taRenderLayer(name) {
 }
 
 function _taHealthColor(h) {
-    var m = {core:'#3b82f6', at_risk:'#ef4444', volatile:'#f59e0b', paid_dependent:'#8b5cf6', standard:'#6b7280'};
-    return m[h] || '#6b7280';
+    var m = {core:'#3b82f6', at_risk:'#ef4444', volatile:'#f59e0b', paid_dependent:'#8b5cf6', standard:'var(--muted)'};
+    return m[h] || 'var(--muted)';
 }
