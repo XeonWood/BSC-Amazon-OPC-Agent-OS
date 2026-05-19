@@ -1,5 +1,7 @@
 
 # BSC OPC Agent OS 
+📖 商海蟹 BSC OPC Agent OS 写了一封信给您
+https://tcn4ssk29vys.feishu.cn/wiki/HzOvwzc77idr1JkWGipctKkPntc
 
 关于"偶尔会抽风"这件事，先把话说在前面
 商海蟹是送给老粉的免费工具，新粉得有老粉推荐才免费使用额度，（老粉是指公众号关注2个月以上的）
